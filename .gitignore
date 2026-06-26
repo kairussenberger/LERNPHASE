@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# Dashboard progress export (personal, lives in your browser)
+lernphase-progress.json
+
+# Editor / OS cruft
+*.swp
+.idea/
+.vscode/

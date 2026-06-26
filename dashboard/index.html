@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark light" />
+<title>LERNPHASE</title>
+<script>
+(function(){try{var m=localStorage.getItem('lp_theme')||'auto';var d=m==='dark'||(m!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);var r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-mode',m);}catch(e){}})();
+</script>
+<style>
+:root,:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0f1216; --surface:#171a20; --surface-2:#1d2128; --hover:#222732;
+  --border:#2a2f39; --border-2:#363c47;
+  --text:#e7eaef; --text-2:#aab1bd; --muted:#7b828f;
+  --ec:#f0883e; --dm:#3fb950; --ss:#58a6ff; --ti:#bc8cff;
+  --ec-soft:rgba(240,136,62,.14); --dm-soft:rgba(63,185,80,.14); --ss-soft:rgba(88,166,255,.14); --ti-soft:rgba(188,140,255,.14);
+  --star:#e3b341; --flag:#f0716a; --flag-soft:rgba(240,113,106,.13);
+  --l0:#222732; --l1:rgba(63,185,80,.26); --l2:rgba(63,185,80,.48); --l3:rgba(63,185,80,.72); --l4:#3fb950;
+  --hm-exam:#f0883e; --hm-sf:#58a6ff;
+  --track:#262c36;
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f4f6f8; --surface:#ffffff; --surface-2:#f1f3f6; --hover:#eef1f5;
+  --border:#e3e7ec; --border-2:#d4dae1;
+  --text:#1a1e26; --text-2:#525a67; --muted:#838b97;
+  --ec:#cf6a1d; --dm:#2f9e41; --ss:#2f7fe0; --ti:#8a55e8;
+  --ec-soft:rgba(207,106,29,.10); --dm-soft:rgba(47,158,65,.10); --ss-soft:rgba(47,127,224,.10); --ti-soft:rgba(138,85,232,.10);
+  --star:#bf8616; --flag:#d8453a; --flag-soft:rgba(216,69,58,.10);
+  --l0:#e7ebf0; --l1:rgba(47,158,65,.28); --l2:rgba(47,158,65,.5); --l3:rgba(47,158,65,.72); --l4:#2f9e41;
+  --hm-exam:#cf6a1d; --hm-sf:#2f7fe0;
+  --track:#e4e8ed;
+}
+[data-subject="ec"]{--accent:var(--ec);--accent-soft:var(--ec-soft)}
+[data-subject="dm"]{--accent:var(--dm);--accent-soft:var(--dm-soft)}
+[data-subject="ss"]{--accent:var(--ss);--accent-soft:var(--ss-soft)}
+[data-subject="ti"]{--accent:var(--ti);--accent-soft:var(--ti-soft)}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html.theming *{transition:background-color .18s ease,border-color .18s ease,color .18s ease !important}
+body{font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,system-ui,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+a{color:var(--ss);text-decoration:none}
+code{font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:1px 5px;color:var(--text-2)}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 22px 60px}
+.stack{display:flex;flex-direction:column;gap:26px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.eyebrow{font-size:11px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 11px 2px}
+
+/* header */
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.glyph{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;color:var(--text-2)}
+h1{font-size:21px;font-weight:750;letter-spacing:-0.02em}
+.sub{font-size:12.5px;color:var(--muted);margin-top:1px}
+.headr{display:flex;align-items:center;gap:12px}
+.phase{font-size:12px;font-weight:600;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:5px 11px;display:inline-flex;align-items:center;gap:7px}
+.phase::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ss)}
+.today{font-size:12px;color:var(--muted)}
+
+/* segmented theme */
+.seg{position:relative;display:inline-flex;padding:2px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2)}
+.seg__thumb{position:absolute;top:2px;bottom:2px;left:0;width:0;border-radius:6px;background:var(--surface);border:1px solid var(--border-2);transition:transform .18s ease,width .18s ease}
+[data-theme="light"] .seg__thumb{background:#fff}
+.seg__btn{position:relative;z-index:1;border:0;background:none;cursor:pointer;font:inherit;font-size:12px;font-weight:600;color:var(--muted);padding:5px 12px;border-radius:6px}
+.seg__btn.on{color:var(--text)}
+
+/* exam countdown */
+.exams{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.exam-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:14px 15px;display:flex;flex-direction:column;border-left:3px solid var(--accent)}
+.exam-card .nm{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:650}
+.exam-card .dt{font-size:12px;color:var(--muted);margin:4px 0 10px}
+.exam-card .big{font-size:30px;font-weight:760;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;line-height:1}
+.exam-card .big small{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0}
+.exam-card.soon .big{color:var(--accent)}
+.exam-card.done{border-left-color:var(--border-2);opacity:.62}
+.exbar{height:3px;border-radius:2px;background:var(--track);margin-top:11px;overflow:hidden}
+.exbar i{display:block;height:100%;background:var(--accent);border-radius:2px;transition:width .3s ease}
+
+/* hero */
+.hero{padding:18px 20px;border-left:3px solid var(--ec)}
+.hero-h{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.hero-h .ttl{font-size:15px;font-weight:700}
+.hero-h .meta{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:3px 9px}
+.steps{list-style:none}
+.steps li{display:grid;grid-template-columns:22px 1fr;gap:12px;padding:9px 0;border-top:1px solid var(--border);align-items:start}
+.steps li:first-child{border-top:0}
+.stepn{width:22px;height:22px;border-radius:6px;background:var(--ec-soft);color:var(--ec);font-weight:700;font-size:12px;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.stept{font-size:13px;color:var(--text-2);line-height:1.5}
+.stept b{color:var(--text);font-weight:650}
+.dur{font-weight:650;color:var(--ec)}
+.tipline{margin-top:11px;padding-top:11px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+
+/* heatmap */
+.heatcard{padding:16px}
+.heatwrap{overflow-x:auto;padding-bottom:2px}
+.months{display:flex;gap:0;margin-left:26px;color:var(--muted);font-size:10.5px;margin-bottom:5px}
+.mlabel{width:15px;flex:none}
+.heatrow{display:flex;gap:6px}
+.daylabels{display:flex;flex-direction:column;gap:3px;width:20px;color:var(--muted);font-size:9px}
+.daylabels span{height:12px;line-height:12px}
+.grid{display:flex;gap:3px}
+.week{display:flex;flex-direction:column;gap:3px}
+.cell{width:12px;height:12px;border-radius:3px;background:var(--l0);cursor:pointer;transition:transform .1s ease}
+.cell.lv1{background:var(--l1)}.cell.lv2{background:var(--l2)}.cell.lv3{background:var(--l3)}.cell.lv4{background:var(--l4)}
+.cell:hover{transform:scale(1.3);box-shadow:0 0 0 1.5px var(--ss)}
+.cell.today{box-shadow:inset 0 0 0 2px var(--text)}
+.cell.exam{box-shadow:inset 0 0 0 2px var(--hm-exam)}
+.cell.sf{box-shadow:inset 0 0 0 2px var(--hm-sf)}
+.cell.out{opacity:.4;pointer-events:none}
+.legend{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:13px;color:var(--muted);font-size:11px}
+.legend .sw{width:12px;height:12px;border-radius:3px;display:inline-block;background:var(--l0)}
+.legend .sw.lv1{background:var(--l1)}.legend .sw.lv2{background:var(--l2)}.legend .sw.lv3{background:var(--l3)}.legend .sw.lv4{background:var(--l4)}
+.legend .sw.exam{box-shadow:inset 0 0 0 2px var(--hm-exam)}
+.legend .sw.sf{box-shadow:inset 0 0 0 2px var(--hm-sf)}
+.legend .k{display:inline-flex;align-items:center;gap:5px}
+.legend .sep{opacity:.5}
+
+/* stats row */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.stat{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
+.statval{font-size:24px;font-weight:760;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.statlbl{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+/* subjects */
+.subjects{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.subject{padding:18px 19px;border-top:3px solid var(--accent)}
+.subhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+.subname{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;min-width:0}
+.subdot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
+.subcount{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pbar{height:6px;border-radius:3px;background:var(--track);overflow:hidden;margin-bottom:4px}
+.pbar i{display:block;height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .3s ease}
+ul.tasks{list-style:none;margin-top:8px}
+ul.tasks li.grp{font-size:10.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:13px;padding-top:10px;border-top:1px solid var(--border)}
+ul.tasks li.grp:first-child{margin-top:2px;border-top:0;padding-top:0}
+.row{display:block}
+.rowlbl{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.check{appearance:none;-webkit-appearance:none;width:18px;height:18px;border-radius:5px;flex:none;margin-top:1px;cursor:pointer;border:1.5px solid var(--border-2);background:var(--surface-2);position:relative;transition:background .12s ease,border-color .12s ease}
+.check:hover{border-color:var(--accent)}
+.check:checked{background:var(--accent);border-color:var(--accent)}
+.check:checked::after{content:"";position:absolute;left:5.5px;top:2px;width:4px;height:8px;border:2px solid #fff;border-top:0;border-left:0;transform:rotate(45deg)}
+[data-theme="light"] .check:checked::after{border-color:#fff}
+.check:focus-visible{outline:2px solid var(--ss);outline-offset:2px}
+.rowtxt{font-size:13px;color:var(--text-2);line-height:1.45;padding-top:1px}
+.row.done .rowtxt{color:var(--muted)}
+.row.done .rt{text-decoration:line-through;text-decoration-color:var(--muted)}
+.star,.flagchip{text-decoration:none}
+.star{color:var(--star)}
+.flagchip{font-size:10px;font-weight:650;color:var(--flag);background:var(--flag-soft);border-radius:5px;padding:1px 5px}
+
+/* footer */
+.foot{display:flex;align-items:center;flex-wrap:wrap;gap:11px;padding:14px 18px}
+.btn{font-size:12.5px;font-weight:600;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:7px 13px;cursor:pointer;transition:background .12s ease,border-color .12s ease}
+.btn:hover{background:var(--hover);border-color:var(--border-2)}
+.btn:focus-visible{outline:2px solid var(--ss);outline-offset:2px}
+.btn.danger{color:var(--flag)}
+.footr{margin-left:auto}
+.foottip{flex-basis:100%;font-size:11.5px;color:var(--muted);margin-top:2px}
+
+@media(max-width:820px){.exams,.stats{grid-template-columns:repeat(2,1fr)}.subjects{grid-template-columns:1fr}}
+@media(max-width:480px){.exams{grid-template-columns:1fr}.top{align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap stack">
+
+  <header class="top">
+    <div class="brand">
+      <div class="glyph"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.6 5.3 8.6 4.7 6 4.7c-1 0-1.8.1-2.5.3v13c.7-.2 1.5-.3 2.5-.3 2.6 0 4.6.6 6 1.8"/><path d="M12 6.5c1.4-1.2 3.4-1.8 6-1.8 1 0 1.8.1 2.5.3v13c-.7-.2-1.5-.3-2.5-.3-2.6 0-4.6.6-6 1.8z"/><path d="M12 6.5v13"/></svg></div>
+      <div>
+        <h1>LERNPHASE</h1>
+        <div class="sub">ETH block exams · Aug 3–20</div>
+      </div>
+    </div>
+    <div class="headr">
+      <div style="text-align:right">
+        <div class="phase" id="phase">—</div>
+        <div class="today" id="todayStr" style="margin-top:4px"></div>
+      </div>
+      <div class="seg" id="seg">
+        <div class="seg__thumb" id="segThumb"></div>
+        <button class="seg__btn" data-mode="light" onclick="setTheme('light')">Light</button>
+        <button class="seg__btn" data-mode="auto" onclick="setTheme('auto')">Auto</button>
+        <button class="seg__btn" data-mode="dark" onclick="setTheme('dark')">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="eyebrow">Exam countdown</h2>
+    <div class="exams" id="exams"></div>
+  </section>
+
+  <section class="card hero" data-subject="ec">
+    <div class="hero-h"><span class="ttl">Start here — today's session</span><span class="meta">~3h · EC kickoff</span></div>
+    <ol class="steps">
+      <li><span class="stepn">1</span><div class="stept"><span class="dur">15 min</span> — Open <code>ec pvk main doc complete.pdf</code> (Masterclass): read §0 + skim the index.</div></li>
+      <li><span class="stepn">2</span><div class="stept"><span class="dur">45 min</span> — Masterclass §2.1–2.3: MOSFET regions + small-signal (g_m, r_o).</div></li>
+      <li><span class="stepn">3</span><div class="stept"><span class="dur">75 min</span> — <b>Exercise 5 + 6</b>: DC bias → region check → small-signal.</div></li>
+      <li><span class="stepn">4</span><div class="stept"><span class="dur">30 min</span> — Start <b>Exercise 7, Q1–Q2</b> (CS/CG R_in/R_out).</div></li>
+      <li><span class="stepn">5</span><div class="stept"><span class="dur">10 min</span> — Tick today's items + log 3h. Bonus: import the Anki deck.</div></li>
+    </ol>
+    <div class="tipline">From tomorrow: 3–4 × 3h sessions/day. Plan → <code>../schedule/SESSIONS.md</code> · milestones → <code>../README.md</code>.</div>
+  </section>
+
+  <section>
+    <h2 class="eyebrow">Study activity</h2>
+    <div class="card heatcard">
+      <div class="heatwrap">
+        <div class="months" id="months"></div>
+        <div class="heatrow">
+          <div class="daylabels"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
+          <div class="grid" id="grid"></div>
+        </div>
+      </div>
+      <div class="legend">
+        <span>Less</span><span class="sw"></span><span class="sw lv1"></span><span class="sw lv2"></span><span class="sw lv3"></span><span class="sw lv4"></span><span>More</span>
+        <span class="sep">·</span><span>click to log 0→10h+</span>
+        <span class="sep">·</span><span class="k"><span class="sw exam"></span>exam</span><span class="k"><span class="sw sf"></span>SF trip</span>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="statval" id="stHours">0</div><div class="statlbl">hours logged</div></div>
+      <div class="stat"><div class="statval" id="stDays">0</div><div class="statlbl">days studied</div></div>
+      <div class="stat"><div class="statval" id="stStreak">0</div><div class="statlbl">day streak</div></div>
+      <div class="stat"><div class="statval" id="stOverall">0%</div><div class="statlbl">tasks done</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="eyebrow">Subjects &amp; progress</h2>
+    <div class="subjects" id="subjects"></div>
+  </section>
+
+  <footer class="card foot">
+    <button class="btn" onclick="exportData()">Export</button>
+    <button class="btn" onclick="document.getElementById('imp').click()">Import</button>
+    <button class="btn danger" onclick="resetAll()">Reset</button>
+    <input id="imp" type="file" accept="application/json" style="display:none" onchange="importData(event)">
+    <div class="foottip">Saved in your browser. <span class="star">⭐</span> = highest-yield · <span class="flagchip">acquire</span> = file to source · 🔒 = reserved.</div>
+  </footer>
+
+</div>
+
+<script>
+const START=new Date(2026,5,25), END=new Date(2026,7,20);
+const EXAMS=[
+  {key:'ec',name:'Electronic Circuits',date:new Date(2026,7,3)},
+  {key:'dm',name:'Diskrete Mathematik',date:new Date(2026,7,5)},
+  {key:'ss',name:'Signals & Systems II',date:new Date(2026,7,15)},
+  {key:'ti',name:'Technische Informatik',date:new Date(2026,7,20)},
+];
+const SF_START=new Date(2026,6,23), SF_END=new Date(2026,6,29);
+const HOURS=[0,2,5,8,11];
+
+const TASKS={
+ ec:{name:'Electronic Circuits',c:'ec',items:[
+  {g:'Formula sheet (build from Masterclass)'},
+  {id:'ec-fs1',t:'MOSFET stages table CS/CG/CD (pp.30–34)',s:1},
+  {id:'ec-fs2',t:'BJT stages table CE/CB/CC (pp.42–55)',s:1},
+  {id:'ec-fs3',t:'Cascode / GmRout / current mirrors (pp.57–64)'},
+  {id:'ec-fs4',t:'Diodes / rectifiers / Bode strip'},
+  {id:'ec-fs5',t:'Finalize + print 10 pages (index + thumbnails)'},
+  {g:'Razavi videos'},
+  {id:'ec-r15',t:'Lec 15 — Biasing, transconductance'},
+  {id:'ec-r16',t:'Lec 16 — BJT I-V, large/small-signal'},
+  {id:'ec-r17',t:'Lec 17 — BJT small-signal model, Early effect',s:1},
+  {id:'ec-r18',t:'Lec 18 — Early effect in SS model'},
+  {id:'ec-r19',t:'Lec 19 — PNP, intro to amplifiers'},
+  {id:'ec-r20',t:'Lec 20 — Common-Emitter stage'},
+  {id:'ec-r21',t:'Lec 21 — CE input/output impedances',s:1},
+  {id:'ec-rcb',t:'Common-Base stage'},
+  {id:'ec-rcc',t:'Common-Collector / emitter follower'},
+  {id:'ec-r29',t:'Lec 29 — Intro to MOSFETs'},
+  {id:'ec-r35',t:'Lec 35 — Common-Source topology'},
+  {id:'ec-rcg',t:'Common-Gate / source follower'},
+  {id:'ec-rcasc',t:'Cascodes & current mirrors (Electronics 2)'},
+  {id:'ec-rdio',t:'Diodes/rectifiers lectures (if Ex2–4 shaky)'},
+  {g:'Exercises'},
+  {id:'ec-e1',t:'Ex 1 — circuit theory recap'},
+  {id:'ec-e2',t:'Ex 2 — diode models / rectifiers'},
+  {id:'ec-e3',t:'Ex 3 — small-signal (diode) + ripple'},
+  {id:'ec-e4',t:'Ex 4 — diode applications'},
+  {id:'ec-e5',t:'Ex 5 — MOSFET fundamentals + regions'},
+  {id:'ec-e6',t:'Ex 6 — models + PMOS (full loop)'},
+  {id:'ec-e7',t:'Ex 7 — MOSFET amps CS/CG/CD',s:1},
+  {id:'ec-e8',t:'Ex 8 — amps + load types'},
+  {id:'ec-e9',t:'Ex 9 — two past-exam MOS problems',s:1},
+  {id:'ec-e10',t:'Ex 10 — BJT biasing / Q-point'},
+  {id:'ec-e11',t:'Ex 11 — Common-Emitter (+cascode R_out)'},
+  {id:'ec-e12',t:'Ex 12 — Common-Base & Common-Collector'},
+  {id:'ec-e13',t:'Ex 13 — cascode / GmRout / mirrors'},
+  {g:'Old exams'},
+  {id:'ec-xhs24',t:'HS 2024 — full (T2 CE, T3 diff-pair)',s:1},
+  {id:'ec-xdiff',t:'Differential pair + CMRR (half-circuit)',s:1},
+  {id:'ec-xold',t:'FS13/HS13 — cherry-pick BJT-amp + mirror'},
+  {id:'ec-mt',t:'Source the 2 midterms',f:1},
+  {id:'ec-speed',t:'Speed-drill: DC→small-signal→A_v',s:1},
+ ]},
+ dm:{name:'Diskrete Mathematik',c:'dm',items:[
+  {g:'Serien (do + understand the Lösung)'},
+  {id:'dm-s1',t:'Serie 1 — sets / power sets / Ramsey'},
+  {id:'dm-s2',t:'Serie 2 — relations / Hasse / Vandermonde'},
+  {id:'dm-s3',t:'Serie 3 — incl-excl / pigeonhole / double-count'},
+  {id:'dm-s4',t:'Serie 4 — binomial / hypergeometric'},
+  {id:'dm-s5',t:'Serie 5 — connectivity / trees'},
+  {id:'dm-s6',t:'Serie 6 — spanning trees / Euler / Hamilton'},
+  {id:'dm-s7',t:'Serie 7 — planar / coloring / Ford–Fulkerson'},
+  {id:'dm-s8',t:'Serie 8 — max-flow/min-cut / matching'},
+  {id:'dm-s9',t:'Serie 9 — divisibility / Euclid'},
+  {id:'dm-s10',t:'Serie 10 — congruences / CRT / LCG'},
+  {id:'dm-s11',t:'Serie 11 — RSA / group axioms'},
+  {id:'dm-s12',t:'Serie 12 — small groups / subgroups'},
+  {id:'dm-s13',t:'Serie 13 — fields / CRC / Reed–Solomon'},
+  {g:'Memorize (no aids)'},
+  {id:'dm-anki1',t:'Install Anki + import deck'},
+  {id:'dm-anki2',t:'Anki daily (incl. SF trip)',s:1},
+  {id:'dm-euclid',t:'Extended Euclid / gcd — P4a (guaranteed)',s:1},
+  {id:'dm-count',t:'4 counting forms — P1 MC (guaranteed)',s:1},
+  {id:'dm-div',t:'Divisibility-counting incl-excl — P1 MC'},
+  {id:'dm-rsa',t:'RSA + CRT + congruences'},
+  {id:'dm-grp',t:'Groups / rings / fields + dihedral + Lagrange'},
+  {id:'dm-flow',t:'Max-flow / Ford–Fulkerson — P3b',s:1},
+  {g:'Old exams (timed)'},
+  {id:'dm-x1',t:'Prüfung SS25 + review'},
+  {id:'dm-x2',t:'Prüfung WS25 + review'},
+  {id:'dm-x3',t:'Prüfung WS26 + review'},
+ ]},
+ ss:{name:'Signals & Systems II',c:'ss',items:[
+  {g:'Theory (PVK chapters)'},
+  {id:'ss-c1',t:'Ch 1 — modeling / state-space'},
+  {id:'ss-c2',t:'Ch 2 — linear algebra / ODE'},
+  {id:'ss-c3',t:'Ch 3 — time domain + stability'},
+  {id:'ss-c4',t:'Ch 4 — controllability / observability',s:1},
+  {id:'ss-c5',t:'Ch 5 — frequency domain (hardest)'},
+  {id:'ss-c6',t:'Ch 6 — discrete-time'},
+  {id:'ss-c7',t:'Ch 7 — nonlinear (Lyapunov/LaSalle)'},
+  {id:'ss-sk',t:'Peer notes + exam-tips'},
+  {id:'ss-a4',t:'Build A4 sheet'},
+  {g:'Example sets'},
+  {id:'ss-u1',t:'U1 — modeling'},
+  {id:'ss-u2',t:'U2 — linear algebra / ODE'},
+  {id:'ss-u3',t:'U3 — time domain + stability'},
+  {id:'ss-u4',t:'U4 — controllability / min-energy',s:1},
+  {id:'ss-u6',t:'U6 — frequency domain / Nyquist'},
+  {id:'ss-u7',t:'U7 — Bode plots'},
+  {id:'ss-u8',t:'U8 — discrete-time / Euler'},
+  {id:'ss-u9',t:'U9 — past-midterm problems'},
+  {id:'ss-u10',t:'U10 — nonlinear'},
+  {g:'Old exams (timed, newest first)'},
+  {id:'ss-xf26',t:'Fall 2026',s:1},
+  {id:'ss-xs25',t:'Spring 2025',s:1},
+  {id:'ss-xf25',t:'Fall 2025'},
+  {id:'ss-xs24',t:'Spring 2024'},
+  {id:'ss-xs23',t:'Spring 2023'},
+  {id:'ss-xf24',t:'Fall 2024 (16.02 sitting)'},
+  {id:'ss-p2',t:'Drill Problem 2 = ctrb/obsv',s:1},
+ ]},
+ ti:{name:'Technische Informatik',c:'ti',items:[
+  {g:'Kernel (cebook)'},
+  {id:'ti-k1',t:'Physical memory / buddy allocator'},
+  {id:'ti-k2',t:'Virtual memory / Sv48 paging'},
+  {id:'ti-k3',t:'Demand paging / huge pages'},
+  {id:'ti-k4',t:'User mode / syscalls'},
+  {id:'ti-k5',t:'Multiprocessing / scheduling'},
+  {g:'Hardware (lectures)'},
+  {id:'ti-h1',t:'Basic CPU / datapath / control'},
+  {id:'ti-h2',t:'Pipeline + parallel execution'},
+  {id:'ti-h3',t:'Caching'},
+  {g:'Drill skills'},
+  {id:'ti-d1',t:'Pipeline timing & hazards',s:1},
+  {id:'ti-d2',t:'Cache miss counting',s:1},
+  {id:'ti-d3',t:'Control signals / RISC-V encoding'},
+  {g:'Example decks (no keys)'},
+  {id:'ti-deck03',t:'Deck 03 — Basic CPU'},
+  {id:'ti-deck04',t:'Deck 04 — Buddy allocator'},
+  {id:'ti-deck05',t:'Deck 05 — Parallel execution'},
+  {id:'ti-deck06',t:'Deck 06 — Pipeline'},
+  {id:'ti-deck07',t:'Deck 07 — Paging'},
+  {id:'ti-deck08',t:'Deck 08 — Demand paging'},
+  {id:'ti-deck09',t:'Deck 09 — User mode'},
+  {id:'ti-deck10',t:'Deck 10 — Multiprocessing'},
+  {id:'ti-deck11',t:'Deck 11 — Caching'},
+  {g:'Real past exams 🔒 reserved → end of July'},
+  {id:'ti-mc1',t:'Past-exam pass #1 (from ~end of July)'},
+  {id:'ti-mc2',t:'Past-exam pass #2 (timed)',s:1},
+  {id:'ti-pvk',t:'PVK video for shaky topics'},
+ ]},
+};
+
+let HRS={}, DONE={};
+try{HRS=JSON.parse(localStorage.getItem('lp_hours')||'{}')}catch(e){}
+try{DONE=JSON.parse(localStorage.getItem('lp_tasks')||'{}')}catch(e){}
+const save=()=>{localStorage.setItem('lp_hours',JSON.stringify(HRS));localStorage.setItem('lp_tasks',JSON.stringify(DONE));};
+const byId=id=>document.getElementById(id);
+const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10);};
+const sameDay=(a,b)=>iso(a)===iso(b);
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const today=new Date();
+
+(function(){
+  let ph='Pre-start';
+  if(today>=START && today<SF_START) ph='P1 · Intensive build';
+  else if(today>=SF_START && today<=SF_END) ph='P2 · SF trip (light)';
+  else if(today>SF_END && today<=END) ph='P3 · Exam-by-exam cram';
+  else if(today>END) ph='Exams done';
+  byId('phase').textContent=ph;
+  byId('todayStr').textContent=today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'});
+})();
+
+function renderExams(){
+  const el=byId('exams'); el.innerHTML='';
+  EXAMS.forEach(e=>{
+    const days=Math.ceil((e.date-today)/86400000);
+    const frac=Math.max(0,Math.min(1,(today-START)/(e.date-START)));
+    const past=days<0, todayex=days===0, soon=days>0&&days<=3;
+    const t=document.createElement('div');
+    t.className='exam-card'+(past?' done':'')+(soon?' soon':'');
+    t.setAttribute('data-subject',e.key);
+    let big;
+    if(past) big='<span class="big" style="font-size:16px">✓ done</span>';
+    else if(todayex) big='<span class="big">TODAY</span>';
+    else big='<span class="big">'+days+'<small> day'+(days===1?'':'s')+'</small></span>';
+    t.innerHTML='<div class="nm"><span class="subdot" style="width:8px;height:8px;border-radius:50%;background:var(--accent)"></span>'+e.name+'</div>'+
+      '<div class="dt">'+e.date.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'})+'</div>'+
+      big+(past?'':'<div class="exbar"><i style="width:'+(frac*100).toFixed(1)+'%"></i></div>');
+    el.appendChild(t);
+  });
+}
+
+function gridStart(){let d=new Date(START);d.setDate(d.getDate()-((d.getDay()+6)%7));return d;}
+function renderHeat(){
+  const g=byId('grid'); g.innerHTML=''; const months=byId('months'); months.innerHTML='';
+  const gs=gridStart(); const gridEnd=addDays(END,(7-((END.getDay()+6)%7))-1);
+  let cur=new Date(gs), lastMonth=-1;
+  while(cur<=gridEnd){
+    const wk=document.createElement('div'); wk.className='week'; const wkFirst=new Date(cur);
+    for(let i=0;i<7;i++){
+      const c=document.createElement('div'); c.className='cell';
+      const inRange=cur>=START&&cur<=END; const ds=iso(cur); const lv=HRS[ds]||0;
+      if(!inRange) c.classList.add('out');
+      if(lv>0) c.classList.add('lv'+lv);
+      if(sameDay(cur,today)) c.classList.add('today');
+      if(EXAMS.some(e=>sameDay(e.date,cur))) c.classList.add('exam');
+      if(cur>=SF_START&&cur<=SF_END) c.classList.add('sf');
+      if(inRange){
+        c.dataset.d=ds;
+        c.title=new Date(cur).toDateString()+' — '+(lv?HOURS[lv]+'h':'no study');
+        c.onclick=()=>{const n=((HRS[ds]||0)+1)%5; if(n===0) delete HRS[ds]; else HRS[ds]=n; save(); renderHeat(); renderStats();};
+      }
+      wk.appendChild(c); cur=addDays(cur,1);
+    }
+    g.appendChild(wk);
+    const m=wkFirst.getMonth(); const span=document.createElement('div'); span.className='mlabel';
+    span.textContent=(m!==lastMonth)?wkFirst.toLocaleDateString('en',{month:'short'}):''; if(m!==lastMonth)lastMonth=m;
+    months.appendChild(span);
+  }
+}
+
+function renderStats(){
+  let hours=0,days=0;
+  Object.keys(HRS).forEach(k=>{if(HRS[k]>0){hours+=HOURS[HRS[k]]||0;days++;}});
+  let streak=0,d=new Date(today); if(!HRS[iso(d)]) d=addDays(d,-1); while(HRS[iso(d)]>0){streak++;d=addDays(d,-1);}
+  let tot=0,done=0; Object.values(TASKS).forEach(s=>s.items.forEach(it=>{if(it.id){tot++;if(DONE[it.id])done++;}}));
+  byId('stHours').textContent=hours;
+  byId('stDays').textContent=days;
+  byId('stStreak').textContent=streak;
+  byId('stOverall').textContent=(tot?Math.round(done/tot*100):0)+'%';
+}
+
+function renderSubjects(){
+  const wrap=byId('subjects'); wrap.innerHTML='';
+  Object.entries(TASKS).forEach(([key,s])=>{
+    const card=document.createElement('div'); card.className='card subject'; card.setAttribute('data-subject',key);
+    let lis='';
+    s.items.forEach(it=>{
+      if(it.g){lis+='<li class="grp">'+it.g+'</li>';return;}
+      const star=it.s?' <span class="star">⭐</span>':'';
+      const flag=it.f?' <span class="flagchip">acquire</span>':'';
+      lis+='<li class="row'+(DONE[it.id]?' done':'')+'"><label class="rowlbl"><input type="checkbox" class="check" id="'+it.id+'" '+(DONE[it.id]?'checked':'')+' onchange="toggle(\''+it.id+'\')"><span class="rowtxt"><span class="rt">'+it.t+'</span>'+star+flag+'</span></label></li>';
+    });
+    card.innerHTML='<div class="subhead"><div class="subname"><span class="subdot"></span>'+s.name+'</div><div class="subcount" id="cnt-'+key+'">0/0</div></div>'+
+      '<div class="pbar"><i id="bar-'+key+'"></i></div>'+
+      '<ul class="tasks">'+lis+'</ul>';
+    wrap.appendChild(card);
+    updateSubject(key);
+  });
+}
+function updateSubject(key){
+  const s=TASKS[key]; const real=s.items.filter(i=>i.id); const done=real.filter(i=>DONE[i.id]).length;
+  const pct=real.length?Math.round(done/real.length*100):0;
+  const bar=byId('bar-'+key); if(bar) bar.style.width=pct+'%';
+  const cnt=byId('cnt-'+key); if(cnt) cnt.textContent=done+'/'+real.length+' · '+pct+'%';
+}
+function toggle(id){
+  if(DONE[id]) delete DONE[id]; else DONE[id]=true; save();
+  let key=null; Object.entries(TASKS).forEach(([k,s])=>{if(s.items.some(it=>it.id===id))key=k;});
+  const box=byId(id); if(box){const row=box.closest('.row'); if(row) row.classList.toggle('done',!!DONE[id]);}
+  if(key) updateSubject(key);
+  renderStats();
+}
+
+function moveThumb(mode){
+  const seg=byId('seg'); if(!seg)return;
+  seg.querySelectorAll('.seg__btn').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+  const act=seg.querySelector('.seg__btn.on'); const thumb=byId('segThumb');
+  if(act&&thumb){thumb.style.width=act.offsetWidth+'px';thumb.style.transform='translateX('+act.offsetLeft+'px)';}
+}
+function setTheme(mode){
+  localStorage.setItem('lp_theme',mode);
+  const dark=mode==='dark'||(mode==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  const root=document.documentElement;
+  root.classList.add('theming'); root.setAttribute('data-theme',dark?'dark':'light'); root.setAttribute('data-mode',mode);
+  clearTimeout(setTheme._t); setTheme._t=setTimeout(()=>root.classList.remove('theming'),220);
+  moveThumb(mode);
+}
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{
+  if((localStorage.getItem('lp_theme')||'auto')==='auto') setTheme('auto');
+});
+
+function exportData(){
+  const blob=new Blob([JSON.stringify({hours:HRS,tasks:DONE},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='lernphase-progress.json'; a.click();
+}
+function importData(ev){
+  const f=ev.target.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{try{const j=JSON.parse(r.result);
+    HRS=Object.fromEntries(Object.entries(j.hours||{}).map(([k,v])=>[k,Math.max(0,Math.min(4,parseInt(v,10)||0))]).filter(([,v])=>v>0));
+    DONE=(j.tasks&&typeof j.tasks==='object')?j.tasks:{};
+    save();renderAll();}catch(e){alert('Bad file')}};
+  r.readAsText(f);
+}
+function resetAll(){if(confirm('Clear all logged hours and ticked tasks?')){HRS={};DONE={};save();renderAll();}}
+
+function renderAll(){renderExams();renderHeat();renderSubjects();renderStats();}
+renderAll();
+const _mode=()=>document.documentElement.getAttribute('data-mode')||'auto';
+const _thumb=byId('segThumb'); if(_thumb) _thumb.style.transition='none';
+moveThumb(_mode());
+window.addEventListener('resize',()=>moveThumb(_mode()));
+requestAnimationFrame(()=>{ if(_thumb) _thumb.style.transition=''; moveThumb(_mode()); });
+</script>
+</body>
+</html>
