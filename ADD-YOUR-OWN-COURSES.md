@@ -10,14 +10,16 @@ This guide walks through everything you need to change to turn it into a hub for
 
 ```
 .
-├── README.md                  ← top-level plan: exam table, phases, week-by-week
-├── ADD-YOUR-OWN-COURSES.md    ← this guide
+├── README.md                  ← the template front door + study method
+├── ADD-YOUR-OWN-COURSES.md    ← this guide (the deep-dive on dashboard setup)
+├── EXAMPLE.md                 ← a real, filled-in plan (worked example)
 ├── subjects/                  ← one (or two) Markdown docs per subject
 │   ├── <Subject>.md           ←   the strategy doc (what to study, why)
 │   └── <Subject>_Playbook.md  ←   the deep-dive (problem index, decoded exam patterns)
 ├── assets/                    ← reusable study assets (flashcards, formula sheets)
 │   ├── *_Anki_deck.txt        ←   import into Anki
 │   └── *_sheet.md             ←   formula / cheat-sheet content plans
+├── materials/                 ← your raw PDFs / slides / past exams (git-ignored)
 ├── schedule/
 │   └── SESSIONS.md            ← a running log of study sessions
 └── dashboard/

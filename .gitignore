@@ -4,6 +4,10 @@
 # Dashboard progress export (personal, lives in your browser)
 lernphase-progress.json
 
+# Your raw study materials (PDFs, slides, past exams) stay local — never committed
+materials/*
+!materials/README.md
+
 # Editor / OS cruft
 *.swp
 .idea/
