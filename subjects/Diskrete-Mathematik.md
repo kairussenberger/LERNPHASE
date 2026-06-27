@@ -2,10 +2,12 @@
 
 **Exam:** **Wed 05.08, 16:00–18:00** · HIL G 75 / G 61 · 227-0033-01S · Prof **U. Koch**
 **Allowed aids:** 🔴 **KEINE — none.** Blue/black pen only; no formula sheet, no calculator, no devices. **Everything from memory.**
-**Format:** **4 problems × 10 pts = 40 pts · 120 min** (~3 min/pt). Lecture results usable without proof unless asked.
+**Format:** **120 min · written · 🔴 keine Hilfsmittel.** Official content split = **four equal 25% blocks**: MC/Kurzfragen · Mengenlehre & Kombinatorik · Graphentheorie · Algebra (elem. Zahlentheorie + Gruppen/Körper/Ringe). Past exams realize this as **4 problems × 10 pts = 40 pts** (one block each, ~3 min/pt); lecture results usable without proof unless asked.
 **Textbook:** Boschini, Hansen, Wolf — *Discrete Mathematics*, vdf 2022, ISBN 978-3-7281-4110-1 (= your `4110…OA.pdf`). Prereq: Analysis 1.
 **Starting point:** ~from zero
 **One-line strategy:** *Memorize the number-theory/algebra machinery cold (flashcards), and grind every Serie + all 3 Koch exams until the patterns are reflex.*
+
+> **✅ Official exam info (course exam-prep slide).** Written · **120 min** · **keine Hilfsmittel**. Content = **four equal 25% blocks**: ① MC / Kurzfragen · ② Mengenlehre & Kombinatorik · ③ Graphentheorie · ④ Algebra (elementary number theory + Gruppen/Körper/Ringe) — exactly the decoded **P1–P4** skeleton below, each worth a quarter. **Resources on Moodle:** book + Skripte + Folien · the **Serien** · the **Quizze** · the **Vorlesungszusammenfassungen** (lecture summaries) · old exams (**reguläre SS25 + Repetitions-WS25**). You already hold SS25/WS25/WS26 + keys.
 
 > **📋 Exam pattern decoded.** All 3 past exams (SS25/WS25/WS26) share an **identical skeleton** → see the full breakdown + Serien index + guaranteed-points drill list in **[DiskMath_Serien-und-Pruefungen.md](DiskMath_Serien-und-Pruefungen.md)**.
 > **Skeleton:** P1 = 10× MC (all blocks) · P2 = combinatorics · P3 = graph (**3b is ALWAYS max-flow**) · P4 = number theory/algebra (**4a is ALWAYS Euclidean gcd of `(year, n)`**).
@@ -56,12 +58,13 @@
 ### 🔴 Must-use (locations confirmed on disk)
 - **Serie 1–13** (`Serie N.pdf`) + ✅ **solutions `your exams folder/DM Serie Lösungen/Lösung 1–13.pdf`** — do every one, then understand every solution (friend's #1 tip). Full per-Serie index in [DiskMath_Serien-und-Pruefungen.md](DiskMath_Serien-und-Pruefungen.md).
 - **Prüfung SS25, WS25, WS26** + ✅ **`Lösung SS25/WS25/WS26.pdf`** (all in `your exams folder/`) — Koch's own exams, **3 of them, now with keys.** Do under strict 120 min. Best predictor; analyzed in the playbook.
-- **`ZusammenfassungenDerVorlesungsstunden.pdf`** — Koch's own **per-week lecture summaries + Lernziele** (54 pp). Excellent for the active-recall pass your friend recommends.
+- **`ZusammenfassungenDerVorlesungsstunden.pdf`** — Koch's own **per-week lecture summaries + Lernziele** (54 pp). Excellent for the active-recall pass your friend recommends. *(= the official "Vorlesungszusammenfassungen" posted to Moodle.)*
 - **`DM_PVKSkript.pdf` + `DM_PVKLösungen.pdf`** — PVK script **with worked solutions** (your current best source of solved problems until Moodle Lösungen are pulled).
 - **`4110…OA.pdf`** (Boschini/Hansen/Wolf) — primary textbook; reference for theory + proofs.
 - **Your flashcard deck** ([`assets/DiskMath_Anki_deck.txt`](../assets/DiskMath_Anki_deck.txt)) — the substitute for the forbidden formula sheet.
 
 ### 🟡 Reference
+- **Quizze (Moodle)** — the course's own quizzes; ideal **MC/Kurzfragen** drill for the 25% MC block (P1).
 - Lecture slides V1–V13 — go through them note-taking style for active recall (friend's method), especially the algebra weeks.
 - **`Ergänzendes Skript … (Flüsse und Schnitte).pdf`** — focused source for network flows/cuts (HS25 addition → exam P3b is always max-flow, so **high value**).
 

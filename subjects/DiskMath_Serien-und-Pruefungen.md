@@ -13,12 +13,13 @@ Built from reading **all 13 Serien** (`Serie 1–13.pdf`) and **all 3 past exams
 ### Format (SS25 = 14.08.25, WS25 = 22.01.25, WS26 = 11.02.26)
 - **4 problems × 10 points = 40 points · 120 minutes** (~3 min/point).
 - **Aids: blue/black pen only.** No pencil/red/green, no devices, **no formula sheet** (matches catalog "Keine"). Lecture results may be used without proof unless asked to prove them. You write directly on the exam.
+- **✅ Official weighting (course slide): 25% each** — MC/Kurzfragen · **Mengenlehre & Kombinatorik** · Graphentheorie · Algebra (elem. Zahlentheorie + Gruppen/Körper/Ringe). Confirms the P1–P4 map below — each block is exactly one quarter; note **P2 = set theory + combinatorics**.
 
 ### Position → topic map (rock-stable across all 3 exams)
 | Problem | Block | What it is | Sub-parts |
 |---------|-------|-----------|-----------|
 | **P1** (10 pts) | All blocks | **10× single-answer MC, 1 pt each, no justification** | mix of A/B/C |
-| **P2** (10 pts) | A — Combinatorics | counting | (a) incl-excl / logic deduction · (b) Hasse diagram or pigeonhole · (c) one harder derivation (recursion/multiset) |
+| **P2** (10 pts) | A — Mengenlehre & Kombinatorik | sets + counting | (a) incl-excl / logic deduction · (b) Hasse diagram or pigeonhole · (c) one harder derivation (recursion/multiset) |
 | **P3** (10 pts) | B — Graph theory | graphs | (a) structural/proof item (rotates) · **(b) ALWAYS max-flow** |
 | **P4** (10 pts) | C — Number theory & Algebra | | **(a) ALWAYS Euclidean gcd** · (b) congruence/RSA/CRC (rotates) · (c) group/symmetry (rotates) |
 
