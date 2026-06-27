@@ -85,7 +85,7 @@ h1{font-size:21px;font-weight:750;letter-spacing:-0.02em}
 .exbar i{display:block;height:100%;background:var(--accent);border-radius:2px;transition:width .3s ease}
 
 /* hero */
-.hero{padding:18px 20px;border-left:3px solid var(--ec)}
+.hero{padding:18px 20px;border-left:3px solid var(--accent)}
 .hero-h{display:flex;align-items:center;gap:9px;margin-bottom:4px}
 .hero-h .ttl{font-size:15px;font-weight:700}
 .hero-h .meta{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:3px 9px}
@@ -179,6 +179,19 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
 .glyph{color:var(--clay)}
 .eyebrow{letter-spacing:.1em}
 [data-theme="light"] .card,[data-theme="light"] .exam-card{box-shadow:0 1px 2px rgba(60,48,30,.05)}
+
+/* live clock + today's-focus queue */
+.clock{font-size:12px;font-weight:600;color:var(--clay);font-variant-numeric:tabular-nums}
+.queue{display:flex;flex-direction:column;margin-top:2px}
+.qrow{display:flex;gap:11px;align-items:flex-start;padding:10px 2px;border-top:1px solid var(--border);cursor:pointer;max-height:72px;overflow:hidden;transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .3s ease,max-height .34s ease,padding .34s ease}
+.qrow:first-child{border-top:0}
+.qrow .qtxt{font-size:13.5px;color:var(--text);line-height:1.45;padding-top:1px}
+.qrow .qsub{font-size:10.5px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-right:8px;white-space:nowrap}
+.qrow.leaving{transform:translateX(-46px);opacity:0;max-height:0;padding-top:0;padding-bottom:0;border-top-color:transparent}
+.qrow.entering{animation:qIn .32s ease}
+@keyframes qIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.qcheck{margin-top:1px}
+.qempty{padding:13px 2px;font-size:13.5px;color:var(--text-2)}
 </style>
 </head>
 <body>
@@ -196,6 +209,7 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
       <div style="text-align:right">
         <div class="phase" id="phase">—</div>
         <div class="today" id="todayStr" style="margin-top:4px"></div>
+        <div class="clock" id="clock" style="margin-top:2px"></div>
       </div>
       <div class="seg" id="seg">
         <div class="seg__thumb" id="segThumb"></div>
@@ -211,16 +225,10 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
     <div class="exams" id="exams"></div>
   </section>
 
-  <section class="card hero" data-subject="ec">
-    <div class="hero-h"><span class="ttl">Start here — today's session</span><span class="meta">~3h · EC kickoff</span></div>
-    <ol class="steps">
-      <li><span class="stepn">1</span><div class="stept"><span class="dur">15 min</span> — Open <code>ec pvk main doc complete.pdf</code> (Masterclass): read §0 + skim the index.</div></li>
-      <li><span class="stepn">2</span><div class="stept"><span class="dur">45 min</span> — Masterclass §2.1–2.3: MOSFET regions + small-signal (g_m, r_o).</div></li>
-      <li><span class="stepn">3</span><div class="stept"><span class="dur">75 min</span> — <b>Exercise 5 + 6</b>: DC bias → region check → small-signal.</div></li>
-      <li><span class="stepn">4</span><div class="stept"><span class="dur">30 min</span> — Start <b>Exercise 7, Q1–Q2</b> (CS/CG R_in/R_out).</div></li>
-      <li><span class="stepn">5</span><div class="stept"><span class="dur">10 min</span> — Tick today's items + log 3h. Bonus: import the Anki deck.</div></li>
-    </ol>
-    <div class="tipline">From tomorrow: 3–4 × 3h sessions/day. Plan → <code>../schedule/SESSIONS.md</code> · milestones → <code>../README.md</code>.</div>
+  <section class="card hero" id="hero" data-subject="ec">
+    <div class="hero-h"><span class="ttl" id="heroTtl">Today’s focus</span><span class="meta" id="heroMeta">—</span></div>
+    <div class="queue" id="todayq"></div>
+    <div class="tipline" id="heroTip">Tick a task — it slides away and the next one surfaces. Stays in sync with the checklists below. Pulls your next priority tasks (nearest exam first, ⭐ high-yield first).</div>
   </section>
 
   <section>
@@ -416,9 +424,9 @@ const byId=id=>document.getElementById(id);
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10);};
 const sameDay=(a,b)=>iso(a)===iso(b);
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
-const today=new Date();
+let today=new Date();
 
-(function(){
+function renderPhase(){
   let ph='Pre-start';
   if(today>=START && today<SF_START) ph='P1 · Intensive build';
   else if(today>=SF_START && today<=SF_END) ph='P2 · SF trip (light)';
@@ -426,7 +434,19 @@ const today=new Date();
   else if(today>END) ph='Exams done';
   byId('phase').textContent=ph;
   byId('todayStr').textContent=today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'});
-})();
+}
+function renderClock(){
+  const now=new Date();
+  const end=new Date(now); end.setHours(24,0,0,0);
+  const ms=end-now, h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000);
+  const el=byId('clock');
+  if(el) el.textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' · ⏳ '+h+'h '+(m<10?'0':'')+m+'m left today';
+}
+function tick(){
+  renderClock();
+  const now=new Date();
+  if(iso(now)!==iso(today)){ today=now; renderPhase(); renderExams(); renderHeat(); renderStats(); renderHero(); }
+}
 
 function renderExams(){
   const el=byId('exams'); el.innerHTML='';
@@ -517,7 +537,70 @@ function toggle(id){
   let key=null; Object.entries(TASKS).forEach(([k,s])=>{if(s.items.some(it=>it.id===id))key=k;});
   const box=byId(id); if(box){const row=box.closest('.row'); if(row) row.classList.toggle('done',!!DONE[id]);}
   if(key) updateSubject(key);
-  renderStats();
+  renderStats(); renderHero();
+}
+
+/* ---- Today's-focus queue ---- */
+function pickQueue(limit){
+  limit=limit||6;
+  const order=EXAMS.slice().sort((a,b)=>{
+    const da=a.date-today, db=b.date-today, fa=da<0, fb=db<0;
+    if(fa!==fb) return fa?1:-1;   // exams already past go last
+    return da-db;                 // soonest upcoming first
+  }).map(e=>e.key);
+  const buckets={};
+  order.forEach(k=>{
+    const s=TASKS[k]; if(!s){buckets[k]=[];return;}
+    const u=s.items.filter(it=>it.id && !DONE[it.id]);
+    u.sort((a,b)=>(b.s?1:0)-(a.s?1:0)); // ⭐ high-yield first
+    buckets[k]=u.map(it=>({k,it,sub:s.name}));
+  });
+  const focus=order.slice(0,2), rest=order.slice(2), q=[];
+  let i=0;
+  while(q.length<limit){
+    let added=false;
+    for(const k of focus){ const a=buckets[k]; if(a&&a[i]){ q.push(a[i]); added=true; if(q.length>=limit) break; } }
+    i++; if(!added) break;
+  }
+  if(q.length<limit){ for(const k of rest){ for(const r of (buckets[k]||[])){ if(q.length>=limit) break; q.push(r); } if(q.length>=limit) break; } }
+  return q.slice(0,limit);
+}
+function renderHero(animateNew){
+  const box=byId('todayq'); if(!box) return;
+  const q=pickQueue(6), hero=byId('hero'), ttl=byId('heroTtl'), meta=byId('heroMeta');
+  if(ttl) ttl.textContent='Today · '+today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'});
+  if(!q.length){
+    if(meta) meta.textContent='all caught up';
+    box.innerHTML='<div class="qempty">🎉 Every task is ticked. Add more in the checklists below — or take the win.</div>';
+    return;
+  }
+  if(hero) hero.setAttribute('data-subject',q[0].k);
+  if(meta) meta.textContent=q[0].sub+' · '+q.length+' queued';
+  box.innerHTML='';
+  q.forEach((row,idx)=>{
+    const l=document.createElement('label'); l.className='qrow'; l.setAttribute('data-subject',row.k);
+    const star=row.it.s?' <span class="star">⭐</span>':'';
+    l.innerHTML='<input type="checkbox" class="check qcheck" data-id="'+row.it.id+'">'+
+      '<span class="qtxt"><span class="qsub">'+row.sub+'</span><span class="rt">'+row.it.t+'</span>'+star+'</span>';
+    if(animateNew && idx===q.length-1) l.classList.add('entering');
+    box.appendChild(l);
+  });
+}
+function heroCheck(cb){
+  const id=cb.getAttribute('data-id'); if(!id) return;
+  const rowEl=cb.closest('.qrow'); if(!rowEl) return;
+  cb.disabled=true; rowEl.classList.add('leaving');
+  let fired=false;
+  const finish=()=>{ if(fired) return; fired=true; heroComplete(id); };
+  rowEl.addEventListener('transitionend',finish,{once:true});
+  setTimeout(finish,440);
+}
+function heroComplete(id){
+  if(!DONE[id]){ DONE[id]=true; save(); }
+  const box=byId(id); if(box){ box.checked=true; const row=box.closest('.row'); if(row) row.classList.add('done'); }
+  let key=null; Object.entries(TASKS).forEach(([k,s])=>{if(s.items.some(it=>it.id===id))key=k;});
+  if(key) updateSubject(key);
+  renderStats(); renderHero(true);
 }
 
 function moveThumb(mode){
@@ -552,8 +635,11 @@ function importData(ev){
 }
 function resetAll(){if(confirm('Clear all logged hours and ticked tasks?')){HRS={};DONE={};save();renderAll();}}
 
-function renderAll(){renderExams();renderHeat();renderSubjects();renderStats();}
+function renderAll(){renderPhase();renderExams();renderHeat();renderSubjects();renderStats();renderHero();}
 renderAll();
+renderClock();
+byId('todayq').addEventListener('change',e=>{ if(e.target.classList.contains('qcheck')) heroCheck(e.target); });
+setInterval(tick,1000);
 const _mode=()=>document.documentElement.getAttribute('data-mode')||'auto';
 const _thumb=byId('segThumb'); if(_thumb) _thumb.style.transition='none';
 moveThumb(_mode());
