@@ -180,17 +180,21 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
 .eyebrow{letter-spacing:.1em}
 [data-theme="light"] .card,[data-theme="light"] .exam-card{box-shadow:0 1px 2px rgba(60,48,30,.05)}
 
-/* live clock + today's-focus queue */
-.clock{font-size:12px;font-weight:600;color:var(--clay);font-variant-numeric:tabular-nums}
+/* today's-focus queue */
 .queue{display:flex;flex-direction:column;margin-top:2px}
-.qrow{display:flex;gap:11px;align-items:flex-start;padding:10px 2px;border-top:1px solid var(--border);cursor:pointer;max-height:72px;overflow:hidden;transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .3s ease,max-height .34s ease,padding .34s ease}
+.qrow{display:flex;gap:11px;align-items:flex-start;padding:10px 2px;border-top:1px solid var(--border);cursor:pointer;transition:transform .44s cubic-bezier(.22,1,.36,1),opacity .3s ease}
 .qrow:first-child{border-top:0}
 .qrow .qtxt{font-size:13.5px;color:var(--text);line-height:1.45;padding-top:1px}
-.qrow .qsub{font-size:10.5px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-right:8px;white-space:nowrap}
-.qrow.leaving{transform:translateX(-46px);opacity:0;max-height:0;padding-top:0;padding-bottom:0;border-top-color:transparent}
-.qrow.entering{animation:qIn .32s ease}
-@keyframes qIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-.qcheck{margin-top:1px}
+.qrow .rt{transition:color .3s ease}
+.qrow .qsub{font-size:10.5px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-right:8px;white-space:nowrap;transition:color .3s ease}
+.qrow.qdone{opacity:.6}
+.qrow.qdone .rt{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--muted)}
+.qrow.qdone .qsub{color:var(--muted)}
+.qrow.entering{animation:qIn .34s ease}
+@keyframes qIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.qcheck{margin-top:1px;transition:background .18s ease,border-color .18s ease}
+.qcheck:checked{animation:qpop .24s ease}
+@keyframes qpop{0%{transform:scale(.82)}55%{transform:scale(1.14)}100%{transform:scale(1)}}
 .qempty{padding:13px 2px;font-size:13.5px;color:var(--text-2)}
 </style>
 </head>
@@ -209,7 +213,6 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
       <div style="text-align:right">
         <div class="phase" id="phase">—</div>
         <div class="today" id="todayStr" style="margin-top:4px"></div>
-        <div class="clock" id="clock" style="margin-top:2px"></div>
       </div>
       <div class="seg" id="seg">
         <div class="seg__thumb" id="segThumb"></div>
@@ -228,7 +231,7 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
   <section class="card hero" id="hero" data-subject="ec">
     <div class="hero-h"><span class="ttl" id="heroTtl">Today’s focus</span><span class="meta" id="heroMeta">—</span></div>
     <div class="queue" id="todayq"></div>
-    <div class="tipline" id="heroTip">Tick a task — it slides away and the next one surfaces. Stays in sync with the checklists below. Pulls your next priority tasks (nearest exam first, ⭐ high-yield first).</div>
+    <div class="tipline" id="heroTip">Tick a task — it greys out and sinks; a fresh one rises to take its place. Untick to undo. Synced with the checklists below (nearest exam first, ⭐ high-yield first).</div>
   </section>
 
   <section>
@@ -435,15 +438,7 @@ function renderPhase(){
   byId('phase').textContent=ph;
   byId('todayStr').textContent=today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'});
 }
-function renderClock(){
-  const now=new Date();
-  const end=new Date(now); end.setHours(24,0,0,0);
-  const ms=end-now, h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000);
-  const el=byId('clock');
-  if(el) el.textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' · ⏳ '+h+'h '+(m<10?'0':'')+m+'m left today';
-}
 function tick(){
-  renderClock();
   const now=new Date();
   if(iso(now)!==iso(today)){ today=now; renderPhase(); renderExams(); renderHeat(); renderStats(); renderHero(); }
 }
@@ -540,67 +535,80 @@ function toggle(id){
   renderStats(); renderHero();
 }
 
-/* ---- Today's-focus queue ---- */
-function pickQueue(limit){
-  limit=limit||6;
+/* ---- Today's-focus queue: a stable per-day list; done items grey out and
+   sink (undoable), undone tops up so a fresh task always rises. ---- */
+const Q_TARGET=5, Q_DONE_KEEP=4;
+let QUEUE=[], QDAY=null;
+function taskById(id){
+  for(const k in TASKS){ const s=TASKS[k]; const it=s.items.find(x=>x.id===id); if(it) return {k,it,sub:s.name}; }
+  return null;
+}
+const idExists=id=>!!taskById(id);
+function pickQueueIds(n){
   const order=EXAMS.slice().sort((a,b)=>{
     const da=a.date-today, db=b.date-today, fa=da<0, fb=db<0;
     if(fa!==fb) return fa?1:-1;   // exams already past go last
     return da-db;                 // soonest upcoming first
   }).map(e=>e.key);
   const buckets={};
-  order.forEach(k=>{
-    const s=TASKS[k]; if(!s){buckets[k]=[];return;}
-    const u=s.items.filter(it=>it.id && !DONE[it.id]);
-    u.sort((a,b)=>(b.s?1:0)-(a.s?1:0)); // ⭐ high-yield first
-    buckets[k]=u.map(it=>({k,it,sub:s.name}));
-  });
-  const focus=order.slice(0,2), rest=order.slice(2), q=[];
-  let i=0;
-  while(q.length<limit){
-    let added=false;
-    for(const k of focus){ const a=buckets[k]; if(a&&a[i]){ q.push(a[i]); added=true; if(q.length>=limit) break; } }
-    i++; if(!added) break;
-  }
-  if(q.length<limit){ for(const k of rest){ for(const r of (buckets[k]||[])){ if(q.length>=limit) break; q.push(r); } if(q.length>=limit) break; } }
-  return q.slice(0,limit);
+  order.forEach(k=>{ const s=TASKS[k]; const u=(s?s.items:[]).filter(it=>it.id&&!DONE[it.id]); u.sort((a,b)=>(b.s?1:0)-(a.s?1:0)); buckets[k]=u.map(it=>it.id); });
+  const focus=order.slice(0,2), rest=order.slice(2), q=[]; let i=0;
+  while(q.length<n){ let added=false; for(const k of focus){ const a=buckets[k]; if(a&&a[i]){ q.push(a[i]); added=true; if(q.length>=n) break; } } i++; if(!added) break; }
+  if(q.length<n){ for(const k of rest){ for(const id of (buckets[k]||[])){ if(q.length>=n) break; q.push(id); } if(q.length>=n) break; } }
+  return q;
 }
-function renderHero(animateNew){
+function ensureQueue(){
+  const d=iso(today);
+  if(QDAY!==d){
+    QDAY=d; QUEUE=[];
+    try{const st=JSON.parse(localStorage.getItem('lp_queue')||'null'); if(st&&st.d===d&&Array.isArray(st.ids)) QUEUE=st.ids.filter(idExists);}catch(e){}
+  } else { QUEUE=QUEUE.filter(idExists); }
+  const undone=QUEUE.filter(id=>!DONE[id]).length;
+  if(undone<Q_TARGET){
+    const need=Q_TARGET-undone, have=new Set(QUEUE);
+    QUEUE=QUEUE.concat(pickQueueIds(80).filter(id=>!have.has(id)).slice(0,need));
+  }
+  const doneIds=QUEUE.filter(id=>DONE[id]);
+  if(doneIds.length>Q_DONE_KEEP){ const drop=new Set(doneIds.slice(0,doneIds.length-Q_DONE_KEEP)); QUEUE=QUEUE.filter(id=>!drop.has(id)); }
+  try{localStorage.setItem('lp_queue',JSON.stringify({d:QDAY,ids:QUEUE}));}catch(e){}
+}
+function orderedIds(){ return QUEUE.filter(id=>!DONE[id]).concat(QUEUE.filter(id=>DONE[id])); } // undone first, done sink
+function makeRow(id){
+  const t=taskById(id)||{k:'ec',it:{t:id},sub:''};
+  const l=document.createElement('label'); l.className='qrow'+(DONE[id]?' qdone':''); l.setAttribute('data-subject',t.k); l.setAttribute('data-id',id);
+  const star=t.it.s?' <span class="star">⭐</span>':'';
+  l.innerHTML='<input type="checkbox" class="check qcheck" '+(DONE[id]?'checked':'')+'>'+
+    '<span class="qtxt"><span class="qsub">'+t.sub+'</span><span class="rt">'+t.it.t+'</span>'+star+'</span>';
+  return l;
+}
+function renderHero(){
   const box=byId('todayq'); if(!box) return;
-  const q=pickQueue(6), hero=byId('hero'), ttl=byId('heroTtl'), meta=byId('heroMeta');
+  ensureQueue();
+  const hero=byId('hero'), ttl=byId('heroTtl'), meta=byId('heroMeta');
   if(ttl) ttl.textContent='Today · '+today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'});
-  if(!q.length){
-    if(meta) meta.textContent='all caught up';
-    box.innerHTML='<div class="qempty">🎉 Every task is ticked. Add more in the checklists below — or take the win.</div>';
-    return;
-  }
-  if(hero) hero.setAttribute('data-subject',q[0].k);
-  if(meta) meta.textContent=q[0].sub+' · '+q.length+' queued';
-  box.innerHTML='';
-  q.forEach((row,idx)=>{
-    const l=document.createElement('label'); l.className='qrow'; l.setAttribute('data-subject',row.k);
-    const star=row.it.s?' <span class="star">⭐</span>':'';
-    l.innerHTML='<input type="checkbox" class="check qcheck" data-id="'+row.it.id+'">'+
-      '<span class="qtxt"><span class="qsub">'+row.sub+'</span><span class="rt">'+row.it.t+'</span>'+star+'</span>';
-    if(animateNew && idx===q.length-1) l.classList.add('entering');
-    box.appendChild(l);
+  if(!QUEUE.length){ box.innerHTML='<div class="qempty">🎉 Every task is ticked. Add more in the checklists below — or take the win.</div>'; if(meta) meta.textContent='all caught up'; return; }
+  const ids=orderedIds();
+  const first={}; [...box.querySelectorAll('.qrow')].forEach(r=>{ first[r.dataset.id]=r.getBoundingClientRect().top; });
+  [...box.querySelectorAll('.qrow')].forEach(r=>{ if(QUEUE.indexOf(r.dataset.id)<0) r.remove(); });
+  const fresh=[];
+  ids.forEach(id=>{ let r=box.querySelector('.qrow[data-id="'+id+'"]'); if(!r){ r=makeRow(id); fresh.push(r); } const cb=r.querySelector('.qcheck'); if(cb) cb.checked=!!DONE[id]; r.classList.toggle('qdone',!!DONE[id]); box.appendChild(r); });
+  const fu=ids.find(id=>!DONE[id]); if(hero) hero.setAttribute('data-subject',(taskById(fu||ids[0])||{}).k||'ec');
+  const un=QUEUE.filter(id=>!DONE[id]).length, dn=QUEUE.length-un;
+  if(meta) meta.textContent=un?(un+' to go'+(dn?' · '+dn+' done':'')):('all done · '+dn+' ✓');
+  [...box.querySelectorAll('.qrow')].forEach(r=>{
+    if(fresh.indexOf(r)>=0){ r.classList.add('entering'); r.addEventListener('animationend',()=>r.classList.remove('entering'),{once:true}); return; }
+    const o=first[r.dataset.id]; if(o==null) return;
+    const dy=o-r.getBoundingClientRect().top;
+    if(dy){ r.style.transition='none'; r.style.transform='translateY('+dy+'px)'; requestAnimationFrame(()=>{ r.style.transition=''; r.style.transform=''; }); }
   });
 }
-function heroCheck(cb){
-  const id=cb.getAttribute('data-id'); if(!id) return;
-  const rowEl=cb.closest('.qrow'); if(!rowEl) return;
-  cb.disabled=true; rowEl.classList.add('leaving');
-  let fired=false;
-  const finish=()=>{ if(fired) return; fired=true; heroComplete(id); };
-  rowEl.addEventListener('transitionend',finish,{once:true});
-  setTimeout(finish,440);
-}
-function heroComplete(id){
-  if(!DONE[id]){ DONE[id]=true; save(); }
-  const box=byId(id); if(box){ box.checked=true; const row=box.closest('.row'); if(row) row.classList.add('done'); }
-  let key=null; Object.entries(TASKS).forEach(([k,s])=>{if(s.items.some(it=>it.id===id))key=k;});
-  if(key) updateSubject(key);
-  renderStats(); renderHero(true);
+function onHeroToggle(cb){
+  const r=cb.closest('.qrow'); if(!r) return; const id=r.dataset.id;
+  if(cb.checked) DONE[id]=true; else delete DONE[id];
+  save();
+  const sbox=byId(id); if(sbox){ sbox.checked=!!DONE[id]; const sr=sbox.closest('.row'); if(sr) sr.classList.toggle('done',!!DONE[id]); }
+  const t=taskById(id); if(t) updateSubject(t.k);
+  renderStats(); renderHero();
 }
 
 function moveThumb(mode){
@@ -637,9 +645,8 @@ function resetAll(){if(confirm('Clear all logged hours and ticked tasks?')){HRS=
 
 function renderAll(){renderPhase();renderExams();renderHeat();renderSubjects();renderStats();renderHero();}
 renderAll();
-renderClock();
-byId('todayq').addEventListener('change',e=>{ if(e.target.classList.contains('qcheck')) heroCheck(e.target); });
-setInterval(tick,1000);
+byId('todayq').addEventListener('change',e=>{ if(e.target.classList.contains('qcheck')) onHeroToggle(e.target); });
+setInterval(tick,30000);
 const _mode=()=>document.documentElement.getAttribute('data-mode')||'auto';
 const _thumb=byId('segThumb'); if(_thumb) _thumb.style.transition='none';
 moveThumb(_mode());
