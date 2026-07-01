@@ -156,6 +156,21 @@ ul.tasks li.grp:first-child{margin-top:2px;border-top:0;padding-top:0}
 .star{color:var(--star)}
 .flagchip{font-size:10px;font-weight:650;color:var(--flag);background:var(--flag-soft);border-radius:5px;padding:1px 5px}
 
+/* recurring daily-recall streak (flame) */
+.row.streakrow{display:flex;gap:11px;align-items:center;padding:5px 0}
+.streak{position:relative;width:30px;height:34px;flex:none;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:center;transition:transform .12s ease}
+.streak:hover{transform:scale(1.07)}
+.streak:active{transform:scale(.93)}
+.streak:focus-visible{outline:2px solid var(--clay);outline-offset:2px;border-radius:7px}
+.streak .flame{position:absolute;inset:0;width:100%;height:100%;fill:var(--muted);transition:fill .15s ease,filter .15s ease}
+.streak:hover .flame{fill:var(--clay)}
+.streak.lit .flame{fill:url(#flameGrad);filter:drop-shadow(0 1px 3px rgba(217,97,46,.42))}
+.streak .snum{position:relative;z-index:1;font-size:11px;font-weight:780;font-variant-numeric:tabular-nums;line-height:1;transform:translateY(2px);color:var(--surface)}
+.streak.lit .snum{color:#4a2206}
+.streak.pop{animation:flamePop .42s ease}
+@keyframes flamePop{0%{transform:scale(.8)}40%{transform:scale(1.2)}70%{transform:scale(.95)}100%{transform:scale(1)}}
+.streakmeta{display:block;font-size:10.5px;color:var(--muted);margin-top:1px}
+
 /* footer */
 .foot{display:flex;align-items:center;flex-wrap:wrap;gap:11px;padding:14px 18px}
 .btn{font-size:12.5px;font-weight:600;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:7px 13px;cursor:pointer;transition:background .12s ease,border-color .12s ease}
@@ -199,6 +214,10 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+<linearGradient id="flameGrad" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#FFD24A"/><stop offset=".5" stop-color="#F59331"/><stop offset="1" stop-color="#D9512A"/>
+</linearGradient></defs></svg>
 <div class="wrap stack">
 
   <header class="top">
@@ -240,7 +259,7 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
       <div class="heatwrap">
         <div class="months" id="months"></div>
         <div class="heatrow">
-          <div class="daylabels"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
+          <div class="daylabels"><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span></span></div>
           <div class="grid" id="grid"></div>
         </div>
       </div>
@@ -268,7 +287,7 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
     <button class="btn" onclick="document.getElementById('imp').click()">Import</button>
     <button class="btn danger" onclick="resetAll()">Reset</button>
     <input id="imp" type="file" accept="application/json" style="display:none" onchange="importData(event)">
-    <div class="foottip">Saved in your browser. <span class="star">⭐</span> = highest-yield · <span class="flagchip">acquire</span> = file to source · 🔒 = reserved.</div>
+    <div class="foottip">Saved in your browser. <span class="star">⭐</span> = highest-yield · <span class="flagchip">acquire</span> = file to source · 🔒 = reserved · 🔥 = daily-recall streak (tap once a day).</div>
   </footer>
 
 </div>
@@ -286,6 +305,24 @@ const HOURS=[0,2,5,8,11];
 
 const TASKS={
  ec:{name:'Electronic Circuits',c:'ec',items:[
+  {g:'Theorie → Aug 3 · Wk1 (now–Jul 4): foundations & diodes'},
+  {id:'ec-th1',t:'Circuit theory: KVL/KCL · Thévenin · s-domain · ideal diode (Ch 1–3)'},
+  {id:'ec-th2',t:'Rectifiers & breakdown · non-ideal diodes (Ch 2.3/3.1)'},
+  {id:'ec-th3',t:'Small-signal diodes: iterative · const-voltage-drop (Ch 3.4)'},
+  {id:'ec-th4',t:'Zener · regulation · limiters · voltage doublers (Ch 3.5)'},
+  {g:'Wk2 (Jul 5–11): MOSFETs'},
+  {id:'ec-th5',t:'MOSFET DC: Vth · NMOS/PMOS · channel-length mod (Ch 6)'},
+  {id:'ec-th6',t:'MOSFET small-signal: derive model · CS/CG/CD (Ch 7)',s:1},
+  {id:'ec-th7',t:'MOSFET amplifiers cont.: CS/CG/CD circuits (Ch 7)'},
+  {g:'Wk3 (Jul 12–18): BJTs — the keystone block'},
+  {id:'ec-th8',t:'BJT intro: operation overview · bypass caps (Ch 4)'},
+  {id:'ec-th9',t:'BJT DC: α/β · active/cutoff/sat · Early voltage (Ch 4/5.1)'},
+  {id:'ec-th10',t:'BJT small-signal: derive model · CE/CB/CC — THE keystone (Ch 5.3)',s:1},
+  {g:'Wk4 (Jul 19–25): BJT amps + cascodes'},
+  {id:'ec-th11',t:'BJT amplifiers cont.: CE/CB/CC · biasing · loads (Ch 5.3)'},
+  {id:'ec-th12',t:'Cascodes & current mirrors · Gm·Rout (Ch 9)'},
+  {g:'Wk5 (Jul 26–Aug 2): consolidate → exam Aug 3'},
+  {id:'ec-th13',t:'Reflex drill: DC bias → small-signal → Av on every config',s:1},
   {g:'Formula sheet (build from Masterclass)'},
   {id:'ec-fs1',t:'MOSFET stages table CS/CG/CD (pp.30–34)',s:1},
   {id:'ec-fs2',t:'BJT stages table CE/CB/CC (pp.42–55)',s:1},
@@ -329,6 +366,20 @@ const TASKS={
   {id:'ec-speed',t:'Speed-drill: DC→small-signal→A_v',s:1},
  ]},
  dm:{name:'Diskrete Mathematik',c:'dm',items:[
+  {g:'Theorie (Vorlesung · per week)'},
+  {id:'dm-th1',t:'W1 — sets · relations (equivalence/order)'},
+  {id:'dm-th2',t:'W2 — functions · 4 counting forms'},
+  {id:'dm-th3',t:'W3 — pigeonhole · inclusion–exclusion'},
+  {id:'dm-th4',t:'W4 — binomial coefficients · Stirling numbers'},
+  {id:'dm-th5',t:'W5 — graphs · connectivity · trees'},
+  {id:'dm-th6',t:'W6 — spanning trees · Euler / Hamilton'},
+  {id:'dm-th7',t:'W7 — planar graphs · Kuratowski · coloring'},
+  {id:'dm-th8',t:'W8 — flows & cuts · Ford–Fulkerson · matchings'},
+  {id:'dm-th9',t:'W9 — divisibility · primes · Euclidean algorithm'},
+  {id:'dm-th10',t:'W10 — linear congruences · CRT'},
+  {id:'dm-th11',t:'W11 — RSA · groups / homomorphisms'},
+  {id:'dm-th12',t:'W12 — cyclic groups · subgroups · Lagrange'},
+  {id:'dm-th13',t:'W13 — rings / fields · CRC · Reed–Solomon'},
   {g:'Serien (do + understand the Lösung)'},
   {id:'dm-s1',t:'Serie 1 — sets / power sets / Ramsey'},
   {id:'dm-s2',t:'Serie 2 — relations / Hasse / Vandermonde'},
@@ -345,7 +396,7 @@ const TASKS={
   {id:'dm-s13',t:'Serie 13 — fields / CRC / Reed–Solomon'},
   {g:'Memorize (no aids)'},
   {id:'dm-anki1',t:'Install Anki + import deck'},
-  {id:'dm-anki2',t:'Anki daily (incl. SF trip)',s:1},
+  {id:'dm-anki2',t:'Anki daily (incl. SF trip)',streak:1},
   {id:'dm-euclid',t:'Extended Euclid / gcd — P4a (guaranteed)',s:1},
   {id:'dm-count',t:'4 counting forms — P1 MC (guaranteed)',s:1},
   {id:'dm-div',t:'Divisibility-counting incl-excl — P1 MC'},
@@ -402,6 +453,7 @@ const TASKS={
   {id:'ti-d1',t:'Pipeline timing & hazards',s:1},
   {id:'ti-d2',t:'Cache miss counting',s:1},
   {id:'ti-d3',t:'Control signals / RISC-V encoding'},
+  {id:'ti-recall',t:'Flashcard / MC daily recall',streak:1},
   {g:'Example decks (no keys)'},
   {id:'ti-deck03',t:'Deck 03 — Basic CPU'},
   {id:'ti-deck04',t:'Deck 04 — Buddy allocator'},
@@ -419,15 +471,53 @@ const TASKS={
  ]},
 };
 
-let HRS={}, DONE={};
+let HRS={}, DONE={}, STREAKS={};
 try{HRS=JSON.parse(localStorage.getItem('lp_hours')||'{}')}catch(e){}
 try{DONE=JSON.parse(localStorage.getItem('lp_tasks')||'{}')}catch(e){}
-const save=()=>{localStorage.setItem('lp_hours',JSON.stringify(HRS));localStorage.setItem('lp_tasks',JSON.stringify(DONE));};
+try{STREAKS=JSON.parse(localStorage.getItem('lp_streaks')||'{}')}catch(e){}
+const save=()=>{localStorage.setItem('lp_hours',JSON.stringify(HRS));localStorage.setItem('lp_tasks',JSON.stringify(DONE));localStorage.setItem('lp_streaks',JSON.stringify(STREAKS));};
 const byId=id=>document.getElementById(id);
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10);};
 const sameDay=(a,b)=>iso(a)===iso(b);
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
 let today=new Date();
+
+/* ---- recurring daily-recall streaks (Anki / flashcards): not one-time tasks,
+   so they render as a flame with the current consecutive-day count inside. ---- */
+const FLAME_SVG='<svg class="flame" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6c1.3 3.2 3.2 4.7 4.7 6.6 1.3 1.6 2.3 3.6 2.3 5.6a7 7 0 0 1-14 0c0-1.5.5-2.9 1.3-4 .4 1.1 1.3 1.9 2.4 2.1C8.5 9 9.4 6 12 4.2c-.6 2.2.2 3.7 1.6 4.7Z"/></svg>';
+const streakDates=id=>Array.isArray(STREAKS[id])?STREAKS[id]:[];
+const streakDoneToday=id=>streakDates(id).includes(iso(today));
+function streakCount(id){
+  const set=new Set(streakDates(id)); if(!set.size) return 0;
+  let d=new Date(today); if(!set.has(iso(d))) d=addDays(d,-1); // grace: a streak kept through yesterday still counts before today's review
+  let n=0; while(set.has(iso(d))){n++;d=addDays(d,-1);} return n;
+}
+function streakMeta(id){const n=streakCount(id);return streakDoneToday(id)?'done today ✓':(n>0?'keep it alive':'start your streak');}
+function streakRowHtml(it){
+  const n=streakCount(it.id), lit=streakDoneToday(it.id);
+  return '<li class="row streakrow">'
+    +'<button type="button" class="streak'+(lit?' lit':'')+'" data-id="'+it.id+'" onclick="toggleStreak(\''+it.id+'\')" aria-label="'+(lit?'Done today':'Not done today')+' — '+n+'-day streak. Toggle today’s review.">'
+    +FLAME_SVG+'<span class="snum">'+n+'</span></button>'
+    +'<span class="rowtxt"><span class="rt">'+it.t+'</span><span class="streakmeta" data-id="'+it.id+'">'+streakMeta(it.id)+'</span></span>'
+  +'</li>';
+}
+function refreshStreak(id){
+  const n=streakCount(id), lit=streakDoneToday(id);
+  document.querySelectorAll('.streak[data-id="'+id+'"]').forEach(el=>{
+    el.classList.toggle('lit',lit);
+    const num=el.querySelector('.snum'); if(num) num.textContent=n;
+    el.setAttribute('aria-label',(lit?'Done today':'Not done today')+' — '+n+'-day streak. Toggle today’s review.');
+  });
+  document.querySelectorAll('.streakmeta[data-id="'+id+'"]').forEach(el=>{el.textContent=streakMeta(id);});
+}
+function refreshAllStreaks(){Object.values(TASKS).forEach(s=>s.items.forEach(it=>{if(it.streak)refreshStreak(it.id);}));}
+function toggleStreak(id){
+  const dates=streakDates(id).slice(), t=iso(today), i=dates.indexOf(t);
+  if(i>=0) dates.splice(i,1); else dates.push(t);
+  if(dates.length) STREAKS[id]=dates.sort(); else delete STREAKS[id];
+  save(); refreshStreak(id);
+  if(streakDoneToday(id)){const el=document.querySelector('.streak[data-id="'+id+'"]'); if(el){el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');}}
+}
 
 function renderPhase(){
   let ph='Pre-start';
@@ -440,7 +530,7 @@ function renderPhase(){
 }
 function tick(){
   const now=new Date();
-  if(iso(now)!==iso(today)){ today=now; renderPhase(); renderExams(); renderHeat(); renderStats(); renderHero(); }
+  if(iso(now)!==iso(today)){ today=now; renderPhase(); renderExams(); renderHeat(); renderStats(); renderHero(); refreshAllStreaks(); }
 }
 
 function renderExams(){
@@ -486,8 +576,8 @@ function renderHeat(){
       wk.appendChild(c); cur=addDays(cur,1);
     }
     g.appendChild(wk);
-    const m=wkFirst.getMonth(); const span=document.createElement('div'); span.className='mlabel';
-    span.textContent=(m!==lastMonth)?wkFirst.toLocaleDateString('en',{month:'short'}):''; if(m!==lastMonth)lastMonth=m;
+    const mDate=addDays(wkFirst,3); const m=mDate.getMonth(); const span=document.createElement('div'); span.className='mlabel';
+    span.textContent=(m!==lastMonth)?mDate.toLocaleDateString('en',{month:'short'}):''; if(m!==lastMonth)lastMonth=m;
     months.appendChild(span);
   }
 }
@@ -496,7 +586,7 @@ function renderStats(){
   let hours=0,days=0;
   Object.keys(HRS).forEach(k=>{if(HRS[k]>0){hours+=HOURS[HRS[k]]||0;days++;}});
   let streak=0,d=new Date(today); if(!HRS[iso(d)]) d=addDays(d,-1); while(HRS[iso(d)]>0){streak++;d=addDays(d,-1);}
-  let tot=0,done=0; Object.values(TASKS).forEach(s=>s.items.forEach(it=>{if(it.id){tot++;if(DONE[it.id])done++;}}));
+  let tot=0,done=0; Object.values(TASKS).forEach(s=>s.items.forEach(it=>{if(it.id&&!it.streak){tot++;if(DONE[it.id])done++;}}));
   byId('stHours').textContent=hours;
   byId('stDays').textContent=days;
   byId('stStreak').textContent=streak;
@@ -510,6 +600,7 @@ function renderSubjects(){
     let lis='';
     s.items.forEach(it=>{
       if(it.g){lis+='<li class="grp">'+it.g+'</li>';return;}
+      if(it.streak){lis+=streakRowHtml(it);return;}
       const star=it.s?' <span class="star">⭐</span>':'';
       const flag=it.f?' <span class="flagchip">acquire</span>':'';
       lis+='<li class="row'+(DONE[it.id]?' done':'')+'"><label class="rowlbl"><input type="checkbox" class="check" id="'+it.id+'" '+(DONE[it.id]?'checked':'')+' onchange="toggle(\''+it.id+'\')"><span class="rowtxt"><span class="rt">'+it.t+'</span>'+star+flag+'</span></label></li>';
@@ -522,7 +613,7 @@ function renderSubjects(){
   });
 }
 function updateSubject(key){
-  const s=TASKS[key]; const real=s.items.filter(i=>i.id); const done=real.filter(i=>DONE[i.id]).length;
+  const s=TASKS[key]; const real=s.items.filter(i=>i.id&&!i.streak); const done=real.filter(i=>DONE[i.id]).length;
   const pct=real.length?Math.round(done/real.length*100):0;
   const bar=byId('bar-'+key); if(bar) bar.style.width=pct+'%';
   const cnt=byId('cnt-'+key); if(cnt) cnt.textContent=done+'/'+real.length+' · '+pct+'%';
@@ -543,7 +634,7 @@ function taskById(id){
   for(const k in TASKS){ const s=TASKS[k]; const it=s.items.find(x=>x.id===id); if(it) return {k,it,sub:s.name}; }
   return null;
 }
-const idExists=id=>!!taskById(id);
+const idExists=id=>{const t=taskById(id);return !!t&&!t.it.streak;}; // streaks never enter the one-time queue
 function pickQueueIds(n){
   const order=EXAMS.slice().sort((a,b)=>{
     const da=a.date-today, db=b.date-today, fa=da<0, fb=db<0;
@@ -551,7 +642,7 @@ function pickQueueIds(n){
     return da-db;                 // soonest upcoming first
   }).map(e=>e.key);
   const buckets={};
-  order.forEach(k=>{ const s=TASKS[k]; const u=(s?s.items:[]).filter(it=>it.id&&!DONE[it.id]); u.sort((a,b)=>(b.s?1:0)-(a.s?1:0)); buckets[k]=u.map(it=>it.id); });
+  order.forEach(k=>{ const s=TASKS[k]; const u=(s?s.items:[]).filter(it=>it.id&&!it.streak&&!DONE[it.id]); u.sort((a,b)=>(b.s?1:0)-(a.s?1:0)); buckets[k]=u.map(it=>it.id); });
   const focus=order.slice(0,2), rest=order.slice(2), q=[]; let i=0;
   while(q.length<n){ let added=false; for(const k of focus){ const a=buckets[k]; if(a&&a[i]){ q.push(a[i]); added=true; if(q.length>=n) break; } } i++; if(!added) break; }
   if(q.length<n){ for(const k of rest){ for(const id of (buckets[k]||[])){ if(q.length>=n) break; q.push(id); } if(q.length>=n) break; } }
@@ -630,7 +721,7 @@ matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{
 });
 
 function exportData(){
-  const blob=new Blob([JSON.stringify({hours:HRS,tasks:DONE},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({hours:HRS,tasks:DONE,streaks:STREAKS},null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='lernphase-progress.json'; a.click();
 }
 function importData(ev){
@@ -638,10 +729,12 @@ function importData(ev){
   r.onload=()=>{try{const j=JSON.parse(r.result);
     HRS=Object.fromEntries(Object.entries(j.hours||{}).map(([k,v])=>[k,Math.max(0,Math.min(4,parseInt(v,10)||0))]).filter(([,v])=>v>0));
     DONE=(j.tasks&&typeof j.tasks==='object')?j.tasks:{};
+    STREAKS={}; const js=(j.streaks&&typeof j.streaks==='object')?j.streaks:{};
+    for(const k in js){const d=Array.isArray(js[k])?js[k].filter(x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)):[]; if(d.length) STREAKS[k]=Array.from(new Set(d)).sort();}
     save();renderAll();}catch(e){alert('Bad file')}};
   r.readAsText(f);
 }
-function resetAll(){if(confirm('Clear all logged hours and ticked tasks?')){HRS={};DONE={};save();renderAll();}}
+function resetAll(){if(confirm('Clear all logged hours, ticked tasks and streaks?')){HRS={};DONE={};STREAKS={};save();renderAll();}}
 
 function renderAll(){renderPhase();renderExams();renderHeat();renderSubjects();renderStats();renderHero();}
 renderAll();
