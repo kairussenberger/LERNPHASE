@@ -213,6 +213,22 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
 .qcheck:checked{animation:qpop .24s ease}
 @keyframes qpop{0%{transform:scale(.82)}55%{transform:scale(1.14)}100%{transform:scale(1)}}
 .qempty{padding:13px 2px;font-size:13.5px;color:var(--text-2)}
+
+/* topic finder */
+.finder{padding:15px 16px}
+.finderInput{width:100%;font:inherit;font-size:14px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:10px 13px;outline:none;transition:border-color .12s ease}
+.finderInput:focus{border-color:var(--clay)}
+.finderInput::placeholder{color:var(--muted)}
+.finderResults{margin-top:11px;display:flex;flex-direction:column}
+.finderHint{font-size:12.5px;color:var(--muted);padding:3px 2px;line-height:1.55}
+.finderHint b{color:var(--text-2);font-weight:600}
+.fres{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:9px 4px;border-top:1px solid var(--border)}
+.fres:first-child{border-top:0}
+.fsub{font-size:10px;font-weight:650;letter-spacing:.03em;text-transform:uppercase;color:var(--accent);white-space:nowrap;padding:2px 8px;border-radius:6px;background:var(--accent-soft)}
+.ftopic{font-size:13.5px;color:var(--text);font-weight:550;font-family:var(--serif);min-width:0}
+.fwhere{font-size:12px;color:var(--text-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.fnone{font-size:13px;color:var(--text-2);padding:8px 2px}
+@media(max-width:560px){.fres{grid-template-columns:auto 1fr}.fwhere{grid-column:2;color:var(--muted);white-space:normal}}
 </style>
 </head>
 <body>
@@ -253,6 +269,14 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
     <div class="hero-h"><span class="ttl" id="heroTtl">Today’s focus</span><span class="meta" id="heroMeta">—</span></div>
     <div class="queue" id="todayq"></div>
     <div class="tipline" id="heroTip">Tick a task — it greys out and sinks; a fresh one rises to take its place. Untick to undo. Synced with the checklists below (nearest exam first, ⭐ high-yield first).</div>
+  </section>
+
+  <section>
+    <h2 class="eyebrow">Find practice by topic</h2>
+    <div class="card finder">
+      <input id="topicq" class="finderInput" type="search" placeholder="Type a topic — e.g. lagrange, eigenwerte, mergesort, induktion, schrauben…" autocomplete="off" spellcheck="false">
+      <div class="finderResults" id="topicResults"></div>
+    </div>
   </section>
 
   <section>
@@ -444,6 +468,90 @@ const TASKS={
   {id:'la-xold',t:'Ältere Basisprüfungen S06–S17 für Schwachstellen'},
  ]},
 };
+
+/* ---- Topic finder index. Built by extracting the text of the downloaded
+   problem sheets and recording which topics appear where. la/m2/ph/i2 are
+   data-backed (keyword found in that sheet); a2 Serien are external (polybox)
+   so they're mapped to chapters/weeks (≈); mk follows the lecture structure. ---- */
+const FINDER=[
+ {s:'a2',t:'Partielle Ableitung & Gradient',w:'Kap III–IV · Serie ≈2–4',k:'partielle ableitung gradient partial derivative richtungsableitung'},
+ {s:'a2',t:'Totales Differential',w:'Kap IV.4 · Serie ≈3',k:'totales differential kettenregel total'},
+ {s:'a2',t:'Taylor & lokale Extrema',w:'Kap IV · Serie ≈4',k:'taylor extrema hesse maximum minimum sattelpunkt'},
+ {s:'a2',t:'Lagrange-Multiplikatoren',w:'Kap IV — Extrema mit Nebenbedingung · Serie ≈4–5',k:'lagrange multiplikator nebenbedingung constrained optimization extrema unter'},
+ {s:'a2',t:'Mehrfachintegrale',w:'Kap V · Serie ≈5–6',k:'doppelintegral dreifachintegral mehrfachintegral multiple integral volumen'},
+ {s:'a2',t:'Transformationssatz (Jacobi)',w:'Kap V.4 · Serie ≈6',k:'transformation jacobi polar zylinder kugelkoordinaten substitution'},
+ {s:'a2',t:'Vektorfelder & Kurvenintegrale',w:'Kap VI · Serie ≈7–9',k:'vektorfeld kurvenintegral linienintegral potential konservativ'},
+ {s:'a2',t:'Gauss & Stokes',w:'Kap VI–VII · Serie ≈9–10',k:'gauss stokes divergenz rotation flussintegral oberflaechenintegral'},
+ {s:'a2',t:'DGL: separierbar',w:'Kap VII.4 · Serie ≈11',k:'differentialgleichung dgl separierbar trennung der variablen'},
+ {s:'a2',t:'DGL: linear / höherer Ordnung',w:'Kap VII–VIII · Serie ≈11–13',k:'lineare dgl homogen partikular charakteristisch'},
+ {s:'a2',t:'Enveloppen',w:'Kap VII.7 · Serie ≈12',k:'enveloppe einhuellende'},
+ {s:'la',t:'Eigenwerte & Eigenvektoren',w:'Serie 2, 7, 8, 10–13',k:'eigenwert eigenvektor eigenvalue charakteristisches polynom'},
+ {s:'la',t:'Diagonalisierung',w:'Serie 7, 10, 13',k:'diagonalisierung diagonalisierbar diagonal'},
+ {s:'la',t:'Orthogonalität & Gram-Schmidt',w:'Serie 3–8, 10, 11, 13',k:'orthogonal orthonormal gram schmidt projektion'},
+ {s:'la',t:'Skalarprodukt / Inneres Produkt',w:'Serie 3–7, 13',k:'skalarprodukt inneres produkt norm'},
+ {s:'la',t:'Symmetrische Matrizen / Spektralsatz',w:'Serie 3, 7, 8, 10, 13',k:'symmetrisch spektralsatz orthogonal diagonalisierbar'},
+ {s:'la',t:'Quadratische Formen',w:'Serie 8',k:'quadratische form definitheit signatur'},
+ {s:'la',t:'Determinante',w:'Serie 1, 2, 7, 10, 12',k:'determinante'},
+ {s:'la',t:'Lineare Abbildungen',w:'Serie 1, 5, 6, 7, 13',k:'lineare abbildung abbildungsmatrix kern bild'},
+ {s:'la',t:'Jordan-Normalform',w:'Serie 13',k:'jordan normalform'},
+ {s:'m2',t:'Statik / Freischneiden',w:'Serie 1, 2, 7, 10, 12',k:'statik freischneiden lagerreaktion gleichgewicht freikoerperbild'},
+ {s:'m2',t:'Kinematik (Geschw./Beschl.)',w:'Serie 1',k:'kinematik geschwindigkeit beschleunigung bahn'},
+ {s:'m2',t:'Reibung',w:'Serie 1, 2, 5, 9',k:'reibung haftung gleitreibung'},
+ {s:'m2',t:'Impuls- & Drallsatz (Kinetik)',w:'Serie 6–11',k:'impuls impulssatz drall drallsatz drehimpuls kinetik bewegungsgleichung newton euler'},
+ {s:'m2',t:'Trägheitsmoment',w:'Serie 6–11',k:'traegheitsmoment massentraegheit steiner'},
+ {s:'m2',t:'Stoß',w:'Serie 6',k:'stoss elastisch impuls'},
+ {s:'m2',t:'Schwingungen',w:'Serie 6, 12',k:'schwingung eigenfrequenz pendel oszillation harmonisch'},
+ {s:'m2',t:'Arbeit & Energie',w:'Serie 11, 12',k:'energiesatz arbeit kinetische potentielle energie'},
+ {s:'ph',t:'Elektrostatik / Coulomb',w:'Woche 2–4, 7 · Block 1',k:'elektrostatik coulomb ladung feld'},
+ {s:'ph',t:'E-Feld / Potential / Kondensator',w:'Woche 2–4 · Block 1',k:'elektrisches feld potential kondensator kapazitaet spannung'},
+ {s:'ph',t:'Gauss (E-Feld)',w:'Woche 2–3 · Block 1',k:'gauss fluss ladungsverteilung'},
+ {s:'ph',t:'Strom & Schaltungen',w:'Woche 5, 7 · Block 2',k:'strom widerstand kirchhoff ohm schaltung'},
+ {s:'ph',t:'Magnetfeld / Lorentz',w:'Woche 7 · Block 2',k:'magnetfeld lorentz magnetisch'},
+ {s:'ph',t:'Induktion',w:'Block 2 (Woche ≈8–9)',k:'induktion faraday lenz spule'},
+ {s:'ph',t:'Maxwell-Gleichungen',w:'Block 2/3',k:'maxwell'},
+ {s:'ph',t:'Elektromagnetische Wellen',w:'Block 3 (Woche ≈9–11)',k:'elektromagnetische welle poynting wellengleichung'},
+ {s:'ph',t:'Optik (Linsen/Interferenz)',w:'Woche 12 · Block 3',k:'optik linse interferenz beugung polarisation brechung'},
+ {s:'ph',t:'Quantenmechanik',w:'Block 4 (Woche ≈13–15)',k:'quantenmechanik photon schroedinger de broglie unschaerfe'},
+ {s:'i2',t:'Sortieralgorithmen',w:'Übung 6–9',k:'sortieren sorting mergesort quicksort bubblesort insertion selection'},
+ {s:'i2',t:'Rekursion',w:'Übung 3, 6–8, 10–12',k:'rekursion recursion rekursiv call stack'},
+ {s:'i2',t:'Master-Theorem / Komplexität',w:'Cheat-Sheet + Rekursions-Übungen 6–8',k:'master theorem komplexitaet laufzeit big-o theta'},
+ {s:'i2',t:'Dynamische Prog. / Knapsack',w:'Übung 10–11',k:'dynamische programmierung dp knapsack rucksack'},
+ {s:'i2',t:'numpy',w:'Übung 1, 3, 4, 10–11',k:'numpy array vektor matrix'},
+ {s:'i2',t:'pandas / DataFrames',w:'Übung 1, 4',k:'pandas dataframe csv'},
+ {s:'i2',t:'matplotlib / Plotting',w:'Übung 1, 4',k:'matplotlib plot diagramm visualisierung'},
+ {s:'i2',t:'Strings & f-Strings',w:'Übung 2–3',k:'string f-string text'},
+ {s:'i2',t:'Listen / Dictionaries',w:'Übung 2, 3, 9',k:'liste dictionary comprehension container'},
+ {s:'i2',t:'Machine Learning / Unsupervised',w:'Übung 12–14',k:'machine learning unsupervised clustering cnn neural'},
+ {s:'mk',t:'Zahnräder & Getriebe',w:'V01–V02 · Übung U01–U03',k:'zahnrad getriebe verzahnung planetengetriebe pinion umlaufgetriebe'},
+ {s:'mk',t:'Vordimensionierung / Umlaufgetriebe',w:'V03',k:'vordimensionierung umlaufgetriebe vorentwurf'},
+ {s:'mk',t:'Welle-Nabe-Verbindungen',w:'V04',k:'welle nabe passfeder verbindung'},
+ {s:'mk',t:'Wellendimensionierung',w:'V05',k:'welle dimensionierung biegung torsion dauerfestigkeit'},
+ {s:'mk',t:'Toleranzen & Passungen',w:'V06',k:'toleranz passung iso spiel uebermass'},
+ {s:'mk',t:'Federn',w:'V07',k:'feder federrate schraubenfeder steifigkeit'},
+ {s:'mk',t:'Lager & Lagerungen',w:'V08 · Übung U05',k:'lager waelzlager lebensdauer last gleitlager'},
+ {s:'mk',t:'Kupplungen',w:'V09',k:'kupplung drehmoment'},
+ {s:'mk',t:'Schrauben',w:'V10 · Übung U10',k:'schraube vorspannung gewinde verschraubung'},
+ {s:'mk',t:'Mechanische Mechanismen',w:'V11',k:'mechanismus gelenk kinematik'},
+ {s:'mk',t:'Gestaltung & Fertigung',w:'V12',k:'gestaltung fertigung konstruktion'},
+ {s:'mk',t:'Elektromotoren',w:'V13',k:'elektromotor antrieb'},
+ {s:'mk',t:'Entwicklungsprozess',w:'V14',k:'entwicklungsprozess produktentwicklung'},
+];
+function _nq(s){return (s||'').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g,'');}
+function _esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function renderFinder(){
+  const inp=byId('topicq'); if(!inp) return; const raw=inp.value.trim(); const q=_nq(raw); const box=byId('topicResults'); if(!box) return;
+  if(!q){box.innerHTML='<div class="finderHint">Type a concept → get the exact sheet. Try <b>lagrange</b>, <b>eigenwerte</b>, <b>mergesort</b>, <b>induktion</b>, <b>schrauben</b> — or a subject name to list all its topics.</div>'; return;}
+  const toks=q.split(/\s+/);
+  const hits=FINDER.map(e=>{
+    const name=(TASKS[e.s]&&TASKS[e.s].name)||e.s;
+    const hay=_nq(e.t+' '+e.k+' '+name);
+    if(!toks.every(t=>hay.includes(t))) return null;
+    const tn=_nq(e.t); let r=2; if(tn.includes(q)) r=1; if(tn.startsWith(q)) r=0;
+    return {e,name,r};
+  }).filter(Boolean).sort((a,b)=>a.r-b.r).slice(0,14);
+  if(!hits.length){box.innerHTML='<div class="fnone">Kein Treffer für „'+_esc(raw)+'". Versuch ein kürzeres/deutsches Stichwort — oder einen Fachnamen.</div>'; return;}
+  box.innerHTML=hits.map(h=>'<div class="fres" data-subject="'+h.e.s+'"><span class="fsub">'+_esc(h.name)+'</span><span class="ftopic">'+_esc(h.e.t)+'</span><span class="fwhere">'+_esc(h.e.w)+'</span></div>').join('');
+}
 
 let HRS={}, DONE={}, STREAKS={};
 try{HRS=JSON.parse(localStorage.getItem('lp_hours')||'{}')}catch(e){}
@@ -710,9 +818,10 @@ function importData(ev){
 }
 function resetAll(){if(confirm('Clear all logged hours, ticked tasks and streaks?')){HRS={};DONE={};STREAKS={};save();renderAll();}}
 
-function renderAll(){renderPhase();renderExams();renderHeat();renderSubjects();renderStats();renderHero();}
+function renderAll(){renderPhase();renderExams();renderHeat();renderSubjects();renderStats();renderHero();renderFinder();}
 renderAll();
 byId('todayq').addEventListener('change',e=>{ if(e.target.classList.contains('qcheck')) onHeroToggle(e.target); });
+byId('topicq').addEventListener('input',renderFinder);
 setInterval(tick,30000);
 const _mode=()=>document.documentElement.getAttribute('data-mode')||'auto';
 const _thumb=byId('segThumb'); if(_thumb) _thumb.style.transition='none';
