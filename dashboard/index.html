@@ -19,8 +19,8 @@
   --border:#43403A; --border-2:#534F47;
   --text:#ECE9DF; --text-2:#B3AE9F; --muted:#8C8779;
   --clay:#D9805A; --link:#D9805A;
-  --ec:#D9805A; --dm:#9FAE73; --ss:#7DA8B6; --ti:#B98EAC;
-  --ec-soft:rgba(217,128,90,.16); --dm-soft:rgba(159,174,115,.16); --ss-soft:rgba(125,168,182,.16); --ti-soft:rgba(185,142,172,.16);
+  --ec:#D9805A; --dm:#9FAE73; --ss:#7DA8B6; --ti:#B98EAC; --i2:#5AA9A2; --la:#CD7C86;
+  --ec-soft:rgba(217,128,90,.16); --dm-soft:rgba(159,174,115,.16); --ss-soft:rgba(125,168,182,.16); --ti-soft:rgba(185,142,172,.16); --i2-soft:rgba(90,169,162,.16); --la-soft:rgba(205,124,134,.16);
   --star:#D6A24E; --flag:#D98570; --flag-soft:rgba(217,133,112,.15);
   --l0:#383530; --l1:rgba(217,128,90,.28); --l2:rgba(217,128,90,.5); --l3:rgba(217,128,90,.74); --l4:#D9805A;
   --hm-exam:#D9805A; --hm-sf:#7DA8B6;
@@ -32,17 +32,19 @@
   --border:#E4DFD2; --border-2:#D6D0BF;
   --text:#26241F; --text-2:#57544B; --muted:#8A8678;
   --clay:#BE5D38; --link:#BE5D38;
-  --ec:#BE5D38; --dm:#6E7B47; --ss:#4E7A88; --ti:#8A5C7C;
-  --ec-soft:rgba(190,93,56,.12); --dm-soft:rgba(110,123,71,.13); --ss-soft:rgba(78,122,136,.12); --ti-soft:rgba(138,92,124,.12);
+  --ec:#BE5D38; --dm:#6E7B47; --ss:#4E7A88; --ti:#8A5C7C; --i2:#37847D; --la:#B15563;
+  --ec-soft:rgba(190,93,56,.12); --dm-soft:rgba(110,123,71,.13); --ss-soft:rgba(78,122,136,.12); --ti-soft:rgba(138,92,124,.12); --i2-soft:rgba(55,132,125,.12); --la-soft:rgba(177,85,99,.12);
   --star:#B5852C; --flag:#BC5240; --flag-soft:rgba(188,82,64,.10);
   --l0:#E7E1D3; --l1:rgba(190,93,56,.22); --l2:rgba(190,93,56,.42); --l3:rgba(190,93,56,.66); --l4:#BE5D38;
   --hm-exam:#BE5D38; --hm-sf:#4E7A88;
   --track:#E7E1D3;
 }
-[data-subject="ec"]{--accent:var(--ec);--accent-soft:var(--ec-soft)}
-[data-subject="dm"]{--accent:var(--dm);--accent-soft:var(--dm-soft)}
-[data-subject="ss"]{--accent:var(--ss);--accent-soft:var(--ss-soft)}
-[data-subject="ti"]{--accent:var(--ti);--accent-soft:var(--ti-soft)}
+[data-subject="m2"]{--accent:var(--ec);--accent-soft:var(--ec-soft)} /* Mechanik II — clay */
+[data-subject="mk"]{--accent:var(--ti);--accent-soft:var(--ti-soft)} /* Maschinenkonstruktion — mauve */
+[data-subject="a2"]{--accent:var(--ss);--accent-soft:var(--ss-soft)} /* Analysis II — blue */
+[data-subject="ph"]{--accent:var(--dm);--accent-soft:var(--dm-soft)} /* Physik – MAVT — olive */
+[data-subject="i2"]{--accent:var(--i2);--accent-soft:var(--i2-soft)} /* Informatik II — teal */
+[data-subject="la"]{--accent:var(--la);--accent-soft:var(--la-soft)} /* Lineare Algebra II — rose */
 
 *{box-sizing:border-box;margin:0;padding:0}
 html.theming *{transition:background-color .18s ease,border-color .18s ease,color .18s ease !important}
@@ -73,7 +75,7 @@ h1{font-size:21px;font-weight:750;letter-spacing:-0.02em}
 .seg__btn.on{color:var(--text)}
 
 /* exam countdown */
-.exams{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.exams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .exam-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:14px 15px;display:flex;flex-direction:column;border-left:3px solid var(--accent)}
 .exam-card .nm{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:650}
 .exam-card .dt{font-size:12px;color:var(--muted);margin:4px 0 10px}
@@ -225,7 +227,7 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
       <div class="glyph"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.6 5.3 8.6 4.7 6 4.7c-1 0-1.8.1-2.5.3v13c.7-.2 1.5-.3 2.5-.3 2.6 0 4.6.6 6 1.8"/><path d="M12 6.5c1.4-1.2 3.4-1.8 6-1.8 1 0 1.8.1 2.5.3v13c-.7-.2-1.5-.3-2.5-.3-2.6 0-4.6.6-6 1.8z"/><path d="M12 6.5v13"/></svg></div>
       <div>
         <h1>LERNPHASE</h1>
-        <div class="sub">ETH block exams · Aug 3–20</div>
+        <div class="sub">ETH D-MAVT · FS2026 Sommersession</div>
       </div>
     </div>
     <div class="headr">
@@ -247,7 +249,7 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
     <div class="exams" id="exams"></div>
   </section>
 
-  <section class="card hero" id="hero" data-subject="ec">
+  <section class="card hero" id="hero" data-subject="m2">
     <div class="hero-h"><span class="ttl" id="heroTtl">Today’s focus</span><span class="meta" id="heroMeta">—</span></div>
     <div class="queue" id="todayq"></div>
     <div class="tipline" id="heroTip">Tick a task — it greys out and sinks; a fresh one rises to take its place. Untick to undo. Synced with the checklists below (nearest exam first, ⭐ high-yield first).</div>
@@ -266,7 +268,7 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
       <div class="legend">
         <span>Less</span><span class="sw"></span><span class="sw lv1"></span><span class="sw lv2"></span><span class="sw lv3"></span><span class="sw lv4"></span><span>More</span>
         <span class="sep">·</span><span>click to log 0→10h+</span>
-        <span class="sep">·</span><span class="k"><span class="sw exam"></span>exam</span><span class="k"><span class="sw sf"></span>SF trip</span>
+        <span class="sep">·</span><span class="k"><span class="sw exam"></span>exam</span>
       </div>
     </div>
     <div class="stats">
@@ -293,181 +295,153 @@ h1{font-weight:560;letter-spacing:-0.012em;font-size:22px}
 </div>
 
 <script>
-const START=new Date(2026,5,25), END=new Date(2026,7,20);
+// FS2026 Sommersession. JS months are 0-indexed: new Date(2026,7,3) = 3 August 2026.
+const START=new Date(2026,6,16), END=new Date(2026,7,19);   // study window: 16 Jul – 19 Aug
 const EXAMS=[
-  {key:'ec',name:'Electronic Circuits',date:new Date(2026,7,3)},
-  {key:'dm',name:'Diskrete Mathematik',date:new Date(2026,7,5)},
-  {key:'ss',name:'Signals & Systems II',date:new Date(2026,7,15)},
-  {key:'ti',name:'Technische Informatik',date:new Date(2026,7,20)},
+  {key:'ph',name:'Physik – MAVT',          date:new Date(2026,7,3)},
+  {key:'i2',name:'Informatik II',          date:new Date(2026,7,5)},
+  {key:'m2',name:'Mechanik II',            date:new Date(2026,7,7)},
+  {key:'la',name:'Lineare Algebra II',     date:new Date(2026,7,11)},
+  {key:'mk',name:'Maschinenkonstruktion',  date:new Date(2026,7,13)},
+  {key:'a2',name:'Analysis II',            date:new Date(2026,7,19)},
 ];
-const SF_START=new Date(2026,6,23), SF_END=new Date(2026,6,29);
 const HOURS=[0,2,5,8,11];
 
 const TASKS={
- ec:{name:'Electronic Circuits',c:'ec',items:[
-  {g:'Theorie → Aug 3 · Wk1 (now–Jul 4): foundations & diodes'},
-  {id:'ec-th1',t:'Circuit theory: KVL/KCL · Thévenin · s-domain · ideal diode (Ch 1–3)'},
-  {id:'ec-th2',t:'Rectifiers & breakdown · non-ideal diodes (Ch 2.3/3.1)'},
-  {id:'ec-th3',t:'Small-signal diodes: iterative · const-voltage-drop (Ch 3.4)'},
-  {id:'ec-th4',t:'Zener · regulation · limiters · voltage doublers (Ch 3.5)'},
-  {g:'Wk2 (Jul 5–11): MOSFETs'},
-  {id:'ec-th5',t:'MOSFET DC: Vth · NMOS/PMOS · channel-length mod (Ch 6)'},
-  {id:'ec-th6',t:'MOSFET small-signal: derive model · CS/CG/CD (Ch 7)',s:1},
-  {id:'ec-th7',t:'MOSFET amplifiers cont.: CS/CG/CD circuits (Ch 7)'},
-  {g:'Wk3 (Jul 12–18): BJTs — the keystone block'},
-  {id:'ec-th8',t:'BJT intro: operation overview · bypass caps (Ch 4)'},
-  {id:'ec-th9',t:'BJT DC: α/β · active/cutoff/sat · Early voltage (Ch 4/5.1)'},
-  {id:'ec-th10',t:'BJT small-signal: derive model · CE/CB/CC — THE keystone (Ch 5.3)',s:1},
-  {g:'Wk4 (Jul 19–25): BJT amps + cascodes'},
-  {id:'ec-th11',t:'BJT amplifiers cont.: CE/CB/CC · biasing · loads (Ch 5.3)'},
-  {id:'ec-th12',t:'Cascodes & current mirrors · Gm·Rout (Ch 9)'},
-  {g:'Wk5 (Jul 26–Aug 2): consolidate → exam Aug 3'},
-  {id:'ec-th13',t:'Reflex drill: DC bias → small-signal → Av on every config',s:1},
-  {g:'Formula sheet (build from Masterclass)'},
-  {id:'ec-fs1',t:'MOSFET stages table CS/CG/CD (pp.30–34)',s:1},
-  {id:'ec-fs2',t:'BJT stages table CE/CB/CC (pp.42–55)',s:1},
-  {id:'ec-fs3',t:'Cascode / GmRout / current mirrors (pp.57–64)'},
-  {id:'ec-fs4',t:'Diodes / rectifiers / Bode strip'},
-  {id:'ec-fs5',t:'Finalize + print 10 pages (index + thumbnails)'},
-  {g:'Razavi videos'},
-  {id:'ec-r15',t:'Lec 15 — Biasing, transconductance'},
-  {id:'ec-r16',t:'Lec 16 — BJT I-V, large/small-signal'},
-  {id:'ec-r17',t:'Lec 17 — BJT small-signal model, Early effect',s:1},
-  {id:'ec-r18',t:'Lec 18 — Early effect in SS model'},
-  {id:'ec-r19',t:'Lec 19 — PNP, intro to amplifiers'},
-  {id:'ec-r20',t:'Lec 20 — Common-Emitter stage'},
-  {id:'ec-r21',t:'Lec 21 — CE input/output impedances',s:1},
-  {id:'ec-rcb',t:'Common-Base stage'},
-  {id:'ec-rcc',t:'Common-Collector / emitter follower'},
-  {id:'ec-r29',t:'Lec 29 — Intro to MOSFETs'},
-  {id:'ec-r35',t:'Lec 35 — Common-Source topology'},
-  {id:'ec-rcg',t:'Common-Gate / source follower'},
-  {id:'ec-rcasc',t:'Cascodes & current mirrors (Electronics 2)'},
-  {id:'ec-rdio',t:'Diodes/rectifiers lectures (if Ex2–4 shaky)'},
-  {g:'Exercises'},
-  {id:'ec-e1',t:'Ex 1 — circuit theory recap'},
-  {id:'ec-e2',t:'Ex 2 — diode models / rectifiers'},
-  {id:'ec-e3',t:'Ex 3 — small-signal (diode) + ripple'},
-  {id:'ec-e4',t:'Ex 4 — diode applications'},
-  {id:'ec-e5',t:'Ex 5 — MOSFET fundamentals + regions'},
-  {id:'ec-e6',t:'Ex 6 — models + PMOS (full loop)'},
-  {id:'ec-e7',t:'Ex 7 — MOSFET amps CS/CG/CD',s:1},
-  {id:'ec-e8',t:'Ex 8 — amps + load types'},
-  {id:'ec-e9',t:'Ex 9 — two past-exam MOS problems',s:1},
-  {id:'ec-e10',t:'Ex 10 — BJT biasing / Q-point'},
-  {id:'ec-e11',t:'Ex 11 — Common-Emitter (+cascode R_out)'},
-  {id:'ec-e12',t:'Ex 12 — Common-Base & Common-Collector'},
-  {id:'ec-e13',t:'Ex 13 — cascode / GmRout / mirrors'},
-  {g:'Old exams'},
-  {id:'ec-xhs24',t:'HS 2024 — full (T2 CE, T3 diff-pair)',s:1},
-  {id:'ec-xdiff',t:'Differential pair + CMRR (half-circuit)',s:1},
-  {id:'ec-xold',t:'FS13/HS13 — cherry-pick BJT-amp + mirror'},
-  {id:'ec-mt',t:'Source the 2 midterms',f:1},
-  {id:'ec-speed',t:'Speed-drill: DC→small-signal→A_v',s:1},
+ m2:{name:'Mechanik II',c:'m2',items:[
+  {g:'Theorie / Vorlesung'},
+  {id:'m2-v1',t:'Vorlesungsfolien durcharbeiten (Folien für Mech II)'},
+  {id:'m2-v2',t:'Einführung 2026 + Kolloquium-Aufgaben'},
+  {id:'m2-fs',t:'Formelsammlung Mechanik II verinnerlichen (Prüfungshilfsmittel)',s:1},
+  {g:'Serien (rechnen + Lösung verstehen)'},
+  {id:'m2-s1',t:'Serie 1'},
+  {id:'m2-s2',t:'Serie 2'},
+  {id:'m2-s3',t:'Serie 3'},
+  {id:'m2-s4',t:'Serie 4'},
+  {id:'m2-s5',t:'Serie 5'},
+  {id:'m2-s6',t:'Serie 6'},
+  {id:'m2-s7',t:'Serie 7'},
+  {id:'m2-s8',t:'Serie 8'},
+  {id:'m2-s9',t:'Serie 9'},
+  {id:'m2-s10',t:'Serie 10'},
+  {id:'m2-s11',t:'Serie 11'},
+  {id:'m2-s12',t:'Serie 12'},
+  {g:'Zwischenprüfung Mai 2026 (schon geschrieben → auswerten)'},
+  {id:'m2-zp',t:'Klausur Mai 2026 + Musterlösung nachrechnen',s:1},
+  {g:'Alte Prüfungen — Klausuren (timed, neueste zuerst)'},
+  {id:'m2-kfs25',t:'Klausur FS25 (timed)',s:1},
+  {id:'m2-kfs24',t:'Klausur FS24 (timed)',s:1},
+  {id:'m2-kfs23',t:'Klausur FS23'},
+  {id:'m2-kfs22',t:'Klausur FS22'},
+  {id:'m2-kfs21',t:'Klausur FS21'},
+  {id:'m2-kfs20',t:'Klausur FS20'},
+  {g:'Alte Prüfungen — Basisprüfungen 🔒 reserve für die Cram-Phase'},
+  {id:'m2-bfs25',t:'Basisprüfung FS25-1',s:1},
+  {id:'m2-bfs24',t:'Basisprüfung FS24-1 & FS24-2'},
+  {id:'m2-bfs23',t:'Basisprüfung FS23-1 & FS23-2'},
+  {id:'m2-bold',t:'Ältere Basisprüfungen FS17–FS22 (Schwachstellen drillen)'},
  ]},
- dm:{name:'Diskrete Mathematik',c:'dm',items:[
-  {g:'Theorie (Vorlesung · per week)'},
-  {id:'dm-th1',t:'W1 — sets · relations (equivalence/order)'},
-  {id:'dm-th2',t:'W2 — functions · 4 counting forms'},
-  {id:'dm-th3',t:'W3 — pigeonhole · inclusion–exclusion'},
-  {id:'dm-th4',t:'W4 — binomial coefficients · Stirling numbers'},
-  {id:'dm-th5',t:'W5 — graphs · connectivity · trees'},
-  {id:'dm-th6',t:'W6 — spanning trees · Euler / Hamilton'},
-  {id:'dm-th7',t:'W7 — planar graphs · Kuratowski · coloring'},
-  {id:'dm-th8',t:'W8 — flows & cuts · Ford–Fulkerson · matchings'},
-  {id:'dm-th9',t:'W9 — divisibility · primes · Euclidean algorithm'},
-  {id:'dm-th10',t:'W10 — linear congruences · CRT'},
-  {id:'dm-th11',t:'W11 — RSA · groups / homomorphisms'},
-  {id:'dm-th12',t:'W12 — cyclic groups · subgroups · Lagrange'},
-  {id:'dm-th13',t:'W13 — rings / fields · CRC · Reed–Solomon'},
-  {g:'Serien (do + understand the Lösung)'},
-  {id:'dm-s1',t:'Serie 1 — sets / power sets / Ramsey'},
-  {id:'dm-s2',t:'Serie 2 — relations / Hasse / Vandermonde'},
-  {id:'dm-s3',t:'Serie 3 — incl-excl / pigeonhole / double-count'},
-  {id:'dm-s4',t:'Serie 4 — binomial / hypergeometric'},
-  {id:'dm-s5',t:'Serie 5 — connectivity / trees'},
-  {id:'dm-s6',t:'Serie 6 — spanning trees / Euler / Hamilton'},
-  {id:'dm-s7',t:'Serie 7 — planar / coloring / Ford–Fulkerson'},
-  {id:'dm-s8',t:'Serie 8 — max-flow/min-cut / matching'},
-  {id:'dm-s9',t:'Serie 9 — divisibility / Euclid'},
-  {id:'dm-s10',t:'Serie 10 — congruences / CRT / LCG'},
-  {id:'dm-s11',t:'Serie 11 — RSA / group axioms'},
-  {id:'dm-s12',t:'Serie 12 — small groups / subgroups'},
-  {id:'dm-s13',t:'Serie 13 — fields / CRC / Reed–Solomon'},
-  {g:'Memorize (no aids)'},
-  {id:'dm-anki1',t:'Install Anki + import deck'},
-  {id:'dm-anki2',t:'Anki daily (incl. SF trip)',streak:1},
-  {id:'dm-euclid',t:'Extended Euclid / gcd — P4a (guaranteed)',s:1},
-  {id:'dm-count',t:'4 counting forms — P1 MC (guaranteed)',s:1},
-  {id:'dm-div',t:'Divisibility-counting incl-excl — P1 MC'},
-  {id:'dm-rsa',t:'RSA + CRT + congruences'},
-  {id:'dm-grp',t:'Groups / rings / fields + dihedral + Lagrange'},
-  {id:'dm-flow',t:'Max-flow / Ford–Fulkerson — P3b',s:1},
-  {g:'Old exams (timed)'},
-  {id:'dm-x1',t:'Prüfung SS25 + review'},
-  {id:'dm-x2',t:'Prüfung WS25 + review'},
-  {id:'dm-x3',t:'Prüfung WS26 + review'},
+ mk:{name:'Maschinenkonstruktion',c:'mk',items:[
+  {g:'Vorlesungen (Folien durcharbeiten)'},
+  {id:'mk-v1',t:'V01/V02 — Zahnräder & Getriebe',s:1},
+  {id:'mk-v3',t:'V03 — Vordimensionierung & Umlaufgetriebe'},
+  {id:'mk-v4',t:'V04 — Welle-Nabe-Verbindungen'},
+  {id:'mk-v5',t:'V05 — Wellendimensionierung',s:1},
+  {id:'mk-v6',t:'V06 — Toleranzen & Passungen'},
+  {id:'mk-v7',t:'V07 — Federn'},
+  {id:'mk-v8',t:'V08 — Lager & Lagerungen',s:1},
+  {id:'mk-v9',t:'V09 — Kupplungen'},
+  {id:'mk-v10',t:'V10 — Schrauben',s:1},
+  {id:'mk-v11',t:'V11 — Mechanische Mechanismen'},
+  {id:'mk-v12',t:'V12 — Gestaltung & Fertigung'},
+  {id:'mk-v13',t:'V13 — Elektromotoren'},
+  {id:'mk-v14',t:'V14 — Entwicklungsprozess'},
+  {g:'Übungen (rechnen + Musterlösung)'},
+  {id:'mk-u1',t:'U01 — Zahnräder',s:1},
+  {id:'mk-u2',t:'U02 — Zahnräder: Geometrie & Kräfte / Piniongetriebe',s:1},
+  {id:'mk-u3',t:'U03 — Planetengetriebe'},
+  {id:'mk-u5',t:'U05 — Lager: Last & Lebensdauer'},
+  {id:'mk-u10',t:'U10 — Schrauben'},
+  {id:'mk-uw',t:'Weitere Übungen (Wellen, Federn, Kupplungen)'},
+  {g:'Prüfung'},
+  {id:'mk-exam',t:'Alte Prüfungen / Konstruktionsaufgaben besorgen',f:1},
+  {id:'mk-cad',t:'CAD-/3D-Druck-Getriebemodelle ansehen (Verständnis)'},
  ]},
- ss:{name:'Signals & Systems II',c:'ss',items:[
-  {g:'Theory (PVK chapters)'},
-  {id:'ss-c1',t:'Ch 1 — modeling / state-space'},
-  {id:'ss-c2',t:'Ch 2 — linear algebra / ODE'},
-  {id:'ss-c3',t:'Ch 3 — time domain + stability'},
-  {id:'ss-c4',t:'Ch 4 — controllability / observability',s:1},
-  {id:'ss-c5',t:'Ch 5 — frequency domain (hardest)'},
-  {id:'ss-c6',t:'Ch 6 — discrete-time'},
-  {id:'ss-c7',t:'Ch 7 — nonlinear (Lyapunov/LaSalle)'},
-  {id:'ss-sk',t:'Peer notes + exam-tips'},
-  {id:'ss-a4',t:'Build A4 sheet'},
-  {g:'Example sets'},
-  {id:'ss-u1',t:'U1 — modeling'},
-  {id:'ss-u2',t:'U2 — linear algebra / ODE'},
-  {id:'ss-u3',t:'U3 — time domain + stability'},
-  {id:'ss-u4',t:'U4 — controllability / min-energy',s:1},
-  {id:'ss-u6',t:'U6 — frequency domain / Nyquist'},
-  {id:'ss-u7',t:'U7 — Bode plots'},
-  {id:'ss-u8',t:'U8 — discrete-time / Euler'},
-  {id:'ss-u9',t:'U9 — past-midterm problems'},
-  {id:'ss-u10',t:'U10 — nonlinear'},
-  {g:'Old exams (timed, newest first)'},
-  {id:'ss-xf26',t:'Fall 2026',s:1},
-  {id:'ss-xs25',t:'Spring 2025',s:1},
-  {id:'ss-xf25',t:'Fall 2025'},
-  {id:'ss-xs24',t:'Spring 2024'},
-  {id:'ss-xs23',t:'Spring 2023'},
-  {id:'ss-xf24',t:'Fall 2024 (16.02 sitting)'},
-  {id:'ss-p2',t:'Drill Problem 2 = ctrb/obsv',s:1},
+ a2:{name:'Analysis II',c:'a2',items:[
+  {g:'Theorie (Skript Stammbach + Notizen)'},
+  {id:'a2-t1',t:'Partielle Ableitungen · Gradient · totales Differential',s:1},
+  {id:'a2-t2',t:'Taylor · Extrema · Lagrange-Multiplikatoren'},
+  {id:'a2-t3',t:'Mehrfachintegrale · Transformationssatz (Jacobi)',s:1},
+  {id:'a2-t4',t:'Vektorfelder · Kurven-/Flächenintegrale · Gauss/Stokes'},
+  {id:'a2-t5',t:'Gewöhnliche DGL: separierbar & linear 1. Ordnung',s:1},
+  {id:'a2-t6',t:'DGL höherer Ordnung · Enveloppen'},
+  {id:'a2-sn',t:'Textschnipsel & Grafiken (Kap 4–7) durchsehen'},
+  {g:'Serien (Polybox-Links der Übungsgruppen)'},
+  {id:'a2-s-early',t:'Serien 1–6 (Differentialrechnung) rechnen'},
+  {id:'a2-s-mid',t:'Serien 7–10 (Integration) rechnen'},
+  {id:'a2-s-late',t:'Serien 11–13 (DGL) rechnen'},
+  {id:'a2-clicker',t:'Clicker-Fragen als Selbsttest durchgehen'},
+  {g:'Drill'},
+  {id:'a2-integ',t:'Integral-Trainer FS26 täglich',streak:1},
+  {g:'Alte Prüfungen (Analysis II — jetzt lokal)'},
+  {id:'a2-altpr',t:'Ana-II-Prüfungen 2023-08 & 2024-02 durchgehen (mit Lösung)',s:1},
+  {id:'a2-x1',t:'Beide Ana-II-Prüfungen timed als Mock'},
  ]},
- ti:{name:'Technische Informatik',c:'ti',items:[
-  {g:'Kernel (cebook)'},
-  {id:'ti-k1',t:'Physical memory / buddy allocator'},
-  {id:'ti-k2',t:'Virtual memory / Sv48 paging'},
-  {id:'ti-k3',t:'Demand paging / huge pages'},
-  {id:'ti-k4',t:'User mode / syscalls'},
-  {id:'ti-k5',t:'Multiprocessing / scheduling'},
-  {g:'Hardware (lectures)'},
-  {id:'ti-h1',t:'Basic CPU / datapath / control'},
-  {id:'ti-h2',t:'Pipeline + parallel execution'},
-  {id:'ti-h3',t:'Caching'},
-  {g:'Drill skills'},
-  {id:'ti-d1',t:'Pipeline timing & hazards',s:1},
-  {id:'ti-d2',t:'Cache miss counting',s:1},
-  {id:'ti-d3',t:'Control signals / RISC-V encoding'},
-  {id:'ti-recall',t:'Flashcard / MC daily recall',streak:1},
-  {g:'Example decks (no keys)'},
-  {id:'ti-deck03',t:'Deck 03 — Basic CPU'},
-  {id:'ti-deck04',t:'Deck 04 — Buddy allocator'},
-  {id:'ti-deck05',t:'Deck 05 — Parallel execution'},
-  {id:'ti-deck06',t:'Deck 06 — Pipeline'},
-  {id:'ti-deck07',t:'Deck 07 — Paging'},
-  {id:'ti-deck08',t:'Deck 08 — Demand paging'},
-  {id:'ti-deck09',t:'Deck 09 — User mode'},
-  {id:'ti-deck10',t:'Deck 10 — Multiprocessing'},
-  {id:'ti-deck11',t:'Deck 11 — Caching'},
-  {g:'Real past exams 🔒 reserved → end of July'},
-  {id:'ti-mc1',t:'Past-exam pass #1 (from ~end of July)'},
-  {id:'ti-mc2',t:'Past-exam pass #2 (timed)',s:1},
-  {id:'ti-pvk',t:'PVK video for shaky topics'},
+ ph:{name:'Physik – MAVT',c:'ph',items:[
+  {g:'Theorie (4 Blöcke — Skript)'},
+  {id:'ph-b1',t:'01 — Einführung & Elektrostatik',s:1},
+  {id:'ph-b2',t:'02 — Strom & Magnetismus',s:1},
+  {id:'ph-b3',t:'03 — Elektromagnetische Wellen & Optik',s:1},
+  {id:'ph-b4',t:'04 — Einführung in die Quantenmechanik'},
+  {g:'Zusammenfassung & aktives Wiederholen'},
+  {id:'ph-zsf',t:'Zusammenfassung.pdf durchgehen + eigene ergänzen'},
+  {id:'ph-cs',t:'Cheat-Sheet (Physik, 10 S.) finalisieren + drucken',s:1},
+  {id:'ph-konz',t:'Konzeptfragen mit Antworten',streak:1},
+  {g:'Serien (Woche 1–15)'},
+  {id:'ph-s1',t:'Serien W1–W4 (Elektrostatik/Strom)'},
+  {id:'ph-s2',t:'Serien W5–W8 (Magnetismus)'},
+  {id:'ph-s3',t:'Serien W9–W12 (EM-Wellen/Optik)'},
+  {id:'ph-s4',t:'Serien W13–W15 (Quantenmechanik)'},
+  {g:'Alte Prüfungen — Blockprüfungen (timed, mit Lösung)'},
+  {id:'ph-xfs22',t:'Blockprüfung FS22 (+ Repetition)',s:1},
+  {id:'ph-xfs20',t:'Blockprüfung FS20 & HS20',s:1},
+  {id:'ph-xfs19',t:'Blockprüfung FS19'},
+  {id:'ph-xfs18',t:'Blockprüfung FS18'},
+  {id:'ph-xold',t:'Blockprüfung FS16/FS17 + Zwischenprüfungen HS14–16'},
+ ]},
+ i2:{name:'Informatik II',c:'i2',items:[
+  {g:'Theorie & Zusammenfassung'},
+  {id:'i2-zf',t:'ZF Informatik II (Zusammenfassung DE/EN) durcharbeiten',s:1},
+  {id:'i2-l03',t:'Lectures 0–3 — Python-Grundlagen · Typen · Kontrollfluss · Funktionen'},
+  {id:'i2-l46',t:'Lectures 4–6 — Datenstrukturen · numpy · Plotting'},
+  {id:'i2-l79',t:'Lectures 7–9 — pandas · Datenanalyse'},
+  {id:'i2-l1012',t:'Lectures 10–12 — weiterführende Datenanalyse / Modellierung'},
+  {id:'i2-l1314',t:'Lectures 13–14 — Machine Learning / Unsupervised'},
+  {id:'i2-cheat',t:'numpy / pandas / matplotlib Cheat-Sheets parat haben'},
+  {id:'i2-cs',t:'Cheat-Sheet (ZSF Info 2) finalisieren + drucken',s:1},
+  {g:'Übungen (uebung 1–14, mit Musterlösung)'},
+  {id:'i2-u14',t:'Übungen 1–4 (Python, numpy)'},
+  {id:'i2-u58',t:'Übungen 5–8 (Plotting, Datenstrukturen)',s:1},
+  {id:'i2-u911',t:'Übungen 9–11 (pandas)'},
+  {id:'i2-u1214',t:'Übungen 12–14 (Anwendung / ML)'},
+  {g:'Alte Prüfungen (timed)'},
+  {id:'i2-x1',t:'Alte Prüfungen drillen — lec.inf.ethz.ch/past_exams',s:1},
+  {id:'i2-x2',t:'2 alte Prüfungen timed als Generalprobe'},
+ ]},
+ la:{name:'Lineare Algebra II',c:'la',items:[
+  {g:'Theorie (Repetition-Zusammenfassungen 1–13)'},
+  {id:'la-r15',t:'Repetition 1–5 durchgehen'},
+  {id:'la-r610',t:'Repetition 6–10 durchgehen',s:1},
+  {id:'la-r1113',t:'Repetition 11–13 durchgehen'},
+  {g:'Serien 1–13 (rechnen + Lösung)'},
+  {id:'la-s14',t:'Serien 1–4'},
+  {id:'la-s58',t:'Serien 5–8',s:1},
+  {id:'la-s913',t:'Serien 9–13'},
+  {id:'la-lk',t:'Lernkontrolle (+ Lösung) als Standortbestimmung',s:1},
+  {g:'Alte Prüfungen — Basisprüfungen S06–S25 (timed, neueste zuerst)'},
+  {id:'la-x25',t:'Basis S23–S25 (+ Lösungen) timed',s:1},
+  {id:'la-x20',t:'Basis S18–S22'},
+  {id:'la-xold',t:'Ältere Basisprüfungen S06–S17 für Schwachstellen'},
  ]},
 };
 
@@ -520,11 +494,12 @@ function toggleStreak(id){
 }
 
 function renderPhase(){
+  const ds=EXAMS.map(e=>e.date).sort((a,b)=>a-b);
+  const first=ds[0], last=ds[ds.length-1], cram=addDays(first,-10);
   let ph='Pre-start';
-  if(today>=START && today<SF_START) ph='P1 · Intensive build';
-  else if(today>=SF_START && today<=SF_END) ph='P2 · SF trip (light)';
-  else if(today>SF_END && today<=END) ph='P3 · Exam-by-exam cram';
-  else if(today>END) ph='Exams done';
+  if(today>END||today>last) ph='Exams done';
+  else if(today>=cram) ph='P2 · Cram, exam-by-exam';
+  else if(today>=START) ph='P1 · Intensive build';
   byId('phase').textContent=ph;
   byId('todayStr').textContent=today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'});
 }
@@ -567,7 +542,6 @@ function renderHeat(){
       if(lv>0) c.classList.add('lv'+lv);
       if(sameDay(cur,today)) c.classList.add('today');
       if(EXAMS.some(e=>sameDay(e.date,cur))) c.classList.add('exam');
-      if(cur>=SF_START&&cur<=SF_END) c.classList.add('sf');
       if(inRange){
         c.dataset.d=ds;
         c.title=new Date(cur).toDateString()+' — '+(lv?HOURS[lv]+'h':'no study');
@@ -665,7 +639,7 @@ function ensureQueue(){
 }
 function orderedIds(){ return QUEUE.filter(id=>!DONE[id]).concat(QUEUE.filter(id=>DONE[id])); } // undone first, done sink
 function makeRow(id){
-  const t=taskById(id)||{k:'ec',it:{t:id},sub:''};
+  const t=taskById(id)||{k:'m2',it:{t:id},sub:''};
   const l=document.createElement('label'); l.className='qrow'+(DONE[id]?' qdone':''); l.setAttribute('data-subject',t.k); l.setAttribute('data-id',id);
   const star=t.it.s?' <span class="star">⭐</span>':'';
   l.innerHTML='<input type="checkbox" class="check qcheck" '+(DONE[id]?'checked':'')+'>'+
@@ -683,7 +657,7 @@ function renderHero(){
   [...box.querySelectorAll('.qrow')].forEach(r=>{ if(QUEUE.indexOf(r.dataset.id)<0) r.remove(); });
   const fresh=[];
   ids.forEach(id=>{ let r=box.querySelector('.qrow[data-id="'+id+'"]'); if(!r){ r=makeRow(id); fresh.push(r); } const cb=r.querySelector('.qcheck'); if(cb) cb.checked=!!DONE[id]; r.classList.toggle('qdone',!!DONE[id]); box.appendChild(r); });
-  const fu=ids.find(id=>!DONE[id]); if(hero) hero.setAttribute('data-subject',(taskById(fu||ids[0])||{}).k||'ec');
+  const fu=ids.find(id=>!DONE[id]); if(hero) hero.setAttribute('data-subject',(taskById(fu||ids[0])||{}).k||'m2');
   const un=QUEUE.filter(id=>!DONE[id]).length, dn=QUEUE.length-un;
   if(meta) meta.textContent=un?(un+' to go'+(dn?' · '+dn+' done':'')):('all done · '+dn+' ✓');
   [...box.querySelectorAll('.qrow')].forEach(r=>{

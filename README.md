@@ -66,10 +66,16 @@ Five steps, roughly in order. None take long; the value is in keeping them curre
 
 Replace the table below with yours — one row per exam, in the order you sit them. The exam order is the spine of the whole plan: it tells you what to front-load.
 
+> Exam dates are set (FS2026 Sommersession). **Allowed aids per exam are still TBD** — confirm the Hilfsmittel in the exam info / myStudies and update the 🟡/🔴 column.
+
 | Exam date | Subject | Doc | Aids allowed | One-line strategy |
 |-----------|---------|-----|--------------|-------------------|
-| `<date>` | `<Subject A>` | [subjects/Subject-A.md](subjects/) | 🟢 open-book / 🟡 1 sheet / 🔴 none | *your headline approach* |
-| `<date>` | `<Subject B>` | [subjects/Subject-B.md](subjects/) | … | … |
+| **Aug 3** | Physik – MAVT | [subjects/Physik-MAVT.md](subjects/Physik-MAVT.md) | 🟡 own cheat sheet (Julia, 10 p.) | 15 past Blockprüfungen *with solutions* — drill timed |
+| **Aug 5** | Informatik II | [subjects/Informatik-II.md](subjects/Informatik-II.md) | 🟡 own cheat sheet (ZSF Info 2) | ZF + Übungen; it's a coding course — write code, then drill past exams |
+| **Aug 7** | Mechanik II | [subjects/Mechanik-II.md](subjects/Mechanik-II.md) | 🟡 provided Formelsammlung | ~25 past exams are the syllabus — drill Klausuren FS20–25 timed |
+| **Aug 11** | Lineare Algebra II | [subjects/Lineare-Algebra-II.md](subjects/Lineare-Algebra-II.md) | 🔴 TBD (likely closed-book) | 72 past Basisprüfungen + Repetition summaries |
+| **Aug 13** | Maschinenkonstruktion | [subjects/Maschinenkonstruktion.md](subjects/Maschinenkonstruktion.md) | 🟡 TBD (formula/tables) | Learn each element's design recipe; do every Übung |
+| **Aug 19** | Analysis II | [subjects/Analysis-II.md](subjects/Analysis-II.md) | 🔴 TBD (likely closed-book) | Old Ana II exams + Integral-Trainer daily |
 
 > Tip: capture **allowed aids** explicitly per exam — they change everything. A closed-book exam means flashcards and spaced repetition; an open-book exam means *build the best possible reference sheet*.
 
