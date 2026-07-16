@@ -537,17 +537,17 @@ const TASKS={
    data-backed (keyword found in that sheet); a2 Serien are external (polybox)
    so they're mapped to chapters/weeks (≈); mk follows the lecture structure. ---- */
 const FINDER=[
- {s:'a2',t:'Partielle Ableitung & Gradient',w:'Kap III–IV · Serie ≈2–4',k:'partielle ableitung gradient partial derivative richtungsableitung'},
- {s:'a2',t:'Totales Differential',w:'Kap IV.4 · Serie ≈3',k:'totales differential kettenregel total'},
- {s:'a2',t:'Taylor & lokale Extrema',w:'Kap IV · Serie ≈4',k:'taylor extrema hesse maximum minimum sattelpunkt'},
- {s:'a2',t:'Lagrange-Multiplikatoren',w:'Kap IV — Extrema mit Nebenbedingung · Serie ≈4–5',k:'lagrange multiplikator nebenbedingung constrained optimization extrema unter'},
- {s:'a2',t:'Mehrfachintegrale',w:'Kap V · Serie ≈5–6',k:'doppelintegral dreifachintegral mehrfachintegral multiple integral volumen'},
- {s:'a2',t:'Transformationssatz (Jacobi)',w:'Kap V.4 · Serie ≈6',k:'transformation jacobi polar zylinder kugelkoordinaten substitution'},
- {s:'a2',t:'Vektorfelder & Kurvenintegrale',w:'Kap VI · Serie ≈7–9',k:'vektorfeld kurvenintegral linienintegral potential konservativ'},
- {s:'a2',t:'Gauss & Stokes',w:'Kap VI–VII · Serie ≈9–10',k:'gauss stokes divergenz rotation flussintegral oberflaechenintegral'},
- {s:'a2',t:'DGL: separierbar',w:'Kap VII.4 · Serie ≈11',k:'differentialgleichung dgl separierbar trennung der variablen'},
- {s:'a2',t:'DGL: linear / höherer Ordnung',w:'Kap VII–VIII · Serie ≈11–13',k:'lineare dgl homogen partikular charakteristisch'},
- {s:'a2',t:'Enveloppen',w:'Kap VII.7 · Serie ≈12',k:'enveloppe einhuellende'},
+ {s:'a2',t:'Partielle Ableitung & Gradient',w:'Serie 3',k:'partielle ableitung gradient partial derivative richtungsableitung'},
+ {s:'a2',t:'Totales Differential',w:'Serie 3',k:'totales differential kettenregel total'},
+ {s:'a2',t:'Taylor & lokale Extrema',w:'Serie 2, 14',k:'taylor extrema hesse maximum minimum sattelpunkt'},
+ {s:'a2',t:'Lagrange-Multiplikatoren',w:'Serie 11',k:'lagrange multiplikator nebenbedingung constrained optimization extrema unter'},
+ {s:'a2',t:'Mehrfachintegrale',w:'Serie 4',k:'doppelintegral dreifachintegral mehrfachintegral multiple integral volumen'},
+ {s:'a2',t:'Transformationssatz (Jacobi)',w:'Serie 3–5',k:'transformation jacobi polar zylinder kugelkoordinaten substitution'},
+ {s:'a2',t:'Vektorfelder & Kurvenintegrale',w:'Serie 5, 7–9, 14',k:'vektorfeld kurvenintegral linienintegral potential konservativ'},
+ {s:'a2',t:'Gauss & Stokes',w:'Serie 4–8',k:'gauss stokes divergenz rotation flussintegral oberflaechenintegral'},
+ {s:'a2',t:'DGL: separierbar',w:'Serie 10, 11',k:'differentialgleichung dgl separierbar trennung der variablen'},
+ {s:'a2',t:'DGL: linear / höherer Ordnung',w:'Serie 11–13',k:'lineare dgl homogen partikular charakteristisch orthogonaltrajektorien'},
+ {s:'a2',t:'Enveloppen',w:'Serie 12',k:'enveloppe einhuellende'},
  {s:'la',t:'Eigenwerte & Eigenvektoren',w:'Serie 2, 7, 8, 10–13',k:'eigenwert eigenvektor eigenvalue charakteristisches polynom'},
  {s:'la',t:'Diagonalisierung',w:'Serie 7, 10, 13',k:'diagonalisierung diagonalisierbar diagonal'},
  {s:'la',t:'Orthogonalität & Gram-Schmidt',w:'Serie 3–8, 10, 11, 13',k:'orthogonal orthonormal gram schmidt projektion'},
@@ -703,6 +703,7 @@ function filesForEntry(e){
     for(const n of nums){
       let hit=false;
       if(e.s==='la') hit=path.includes('serien')&&new RegExp('^[sl]0*'+n+'\\.pdf$').test(name);
+      else if(e.s==='a2') hit=path.includes('quiz-scrape')&&new RegExp('^serie 0*'+n+'\\.html$').test(name);
       else if(e.s==='m2') hit=new RegExp('(^|[^0-9])'+n+'\\.serie').test(path);
       else if(e.s==='ph') hit=new RegExp('woche '+n+'([^0-9]|$)').test(path);
       else if(e.s==='i2') hit=new RegExp('(uebung|exercise)0*'+n+'([^0-9]|$)').test(name);
