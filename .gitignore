@@ -4,6 +4,9 @@
 # Dashboard progress export (personal, lives in your browser)
 lernphase-progress.json
 
+# Generated file manifest for the Materials tab (lists local-only materials/) — regenerate with scripts/gen_materials_manifest.py
+dashboard/materials.js
+
 # Your raw study materials (PDFs, slides, past exams) stay local — never committed
 materials/*
 !materials/README.md
